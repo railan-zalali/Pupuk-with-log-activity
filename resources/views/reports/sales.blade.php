@@ -4,16 +4,11 @@
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 {{ __('Sales Report') }}
             </h2>
-            <div class="flex space-x-2">
-                <a href="{{ route('reports.export.sales', ['type' => 'excel'] + request()->all()) }}"
-                    class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Export Excel
-                </a>
-                <a href="{{ route('reports.export.sales', ['type' => 'pdf'] + request()->all()) }}"
-                    class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Export PDF
-                </a>
-            </div>
+            <x-report-export-buttons route="reports.sales" :parameters="[
+                'start_date' => request('start_date'),
+                'end_date' => request('end_date'),
+                'payment_method' => request('payment_method'),
+            ]" />
         </div>
     </x-slot>
 
@@ -21,8 +16,7 @@
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             {{-- Filters --}}
             <div class="mb-6 bg-white rounded-lg shadow-sm p-6">
-                <form action="{{ route('reports.sales') }}" method="GET"
-                    class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <form action="{{ route('reports.sales') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <x-input-label for="start_date" value="Start Date" />
                         <x-text-input type="date" name="start_date" id="start_date"

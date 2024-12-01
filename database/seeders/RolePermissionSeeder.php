@@ -13,59 +13,54 @@ class RolePermissionSeeder extends Seeder
 {
     public function run()
     {
-        // Create permissions
+        // Buat permissions
         $permissions = [
-            'view-dashboard' => 'Access Dashboard',
-            'manage-products' => 'Manage Products',
-            'manage-categories' => 'Manage Categories',
-            'manage-suppliers' => 'Manage Suppliers',
-            'manage-customers' => 'Manage Customers',
-            'manage-purchases' => 'Manage Purchases',
-            'manage-sales' => 'Manage Sales',
-            'access-reports' => 'Access Reports',
-            'manage-users' => 'Manage Users',
-            'manage-roles' => 'Manage Roles'
+            ['name' => 'Access Dashboard', 'slug' => 'access-dashboard'],
+            ['name' => 'Manage Products', 'slug' => 'manage-products'],
+            ['name' => 'Manage Categories', 'slug' => 'manage-categories'],
+            ['name' => 'Manage Suppliers', 'slug' => 'manage-suppliers'],
+            ['name' => 'Manage Customers', 'slug' => 'manage-customers'],
+            ['name' => 'Manage Sales', 'slug' => 'manage-sales'],
+            ['name' => 'Manage Purchases', 'slug' => 'manage-purchases'],
+            ['name' => 'Access Reports', 'slug' => 'access-reports'],
+            ['name' => 'Manage Users', 'slug' => 'manage-users'],
+            ['name' => 'Manage Roles', 'slug' => 'manage-roles'],
         ];
 
-        foreach ($permissions as $slug => $name) {
-            Permission::create([
-                'name' => $name,
-                'slug' => $slug,
-                'description' => 'Ability to ' . Str::lower($name)
-            ]);
+        foreach ($permissions as $permission) {
+            Permission::create($permission);
         }
 
-        // Create roles
+        // Buat roles
         $adminRole = Role::create([
             'name' => 'Administrator',
-            'slug' => 'admin',
-            'description' => 'Full access to all features'
+            'slug' => 'admin'
         ]);
 
-        $cashierRole = Role::create([
+        $kasirRole = Role::create([
             'name' => 'Cashier',
-            'slug' => 'cashier',
-            'description' => 'Can manage sales and customers'
+            'slug' => 'cashier'
         ]);
 
-        // Assign permissions to roles
+        // Assign permissions ke roles
         $adminRole->permissions()->attach(Permission::all());
 
-        $cashierRole->permissions()->attach(Permission::whereIn('slug', [
-            'view-dashboard',
-            'manage-sales',
-            'manage-customers'
-        ])->get());
+        $kasirRole->permissions()->attach(
+            Permission::whereIn('slug', [
+                'access-dashboard',
+                'manage-sales',
+                'manage-customers',
+                'access-reports'
+            ])->get()
+        );
 
-        // Create admin user if not exists
-        if (!User::where('email', 'admin@example.com')->exists()) {
-            $admin = User::create([
-                'name' => 'Administrator',
-                'email' => 'admin@example.com',
-                'password' => bcrypt('password')
-            ]);
+        // Buat admin user
+        $admin = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'),
+        ]);
 
-            $admin->roles()->attach($adminRole);
-        }
+        $admin->roles()->attach($adminRole);
     }
 }

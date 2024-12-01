@@ -25,18 +25,15 @@ class RoleController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:roles',
-            'description' => 'nullable|string',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id'
+            'permissions' => 'required|array|exists:permissions,id'
         ]);
 
         $role = Role::create([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'description' => $request->description
+            'slug' => Str::slug($request->name)
         ]);
 
-        $role->permissions()->sync($request->permissions);
+        $role->permissions()->attach($request->permissions);
 
         return redirect()
             ->route('roles.index')
@@ -45,23 +42,32 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
+        if ($role->id === 1) {
+            return redirect()
+                ->route('roles.index')
+                ->with('error', 'Cannot edit admin role');
+        }
+
         $permissions = Permission::all();
         return view('roles.edit', compact('role', 'permissions'));
     }
 
     public function update(Request $request, Role $role)
     {
+        if ($role->id === 1) {
+            return redirect()
+                ->route('roles.index')
+                ->with('error', 'Cannot edit admin role');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'description' => 'nullable|string',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id'
+            'permissions' => 'required|array|exists:permissions,id'
         ]);
 
         $role->update([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'description' => $request->description
+            'slug' => Str::slug($request->name)
         ]);
 
         $role->permissions()->sync($request->permissions);
@@ -73,6 +79,10 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
+        if ($role->id === 1) {
+            return back()->with('error', 'Cannot delete admin role');
+        }
+
         if ($role->users()->exists()) {
             return back()->with('error', 'Cannot delete role that has users');
         }

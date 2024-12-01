@@ -4,16 +4,7 @@
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 {{ __('Stock Report') }}
             </h2>
-            <div class="flex space-x-2">
-                <a href="{{ route('reports.stock', ['type' => 'excel']) }}"
-                    class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Export Excel
-                </a>
-                <a href="{{ route('reports.stock', ['type' => 'pdf']) }}"
-                    class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Export PDF
-                </a>
-            </div>
+            <x-report-export-buttons route="reports.stock" />
         </div>
     </x-slot>
 

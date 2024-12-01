@@ -27,8 +27,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,id'
+            'roles' => 'required|array|exists:roles,id'
         ]);
 
         $user = User::create([
@@ -37,7 +36,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $user->roles()->sync($request->roles);
+        $user->roles()->attach($request->roles);
 
         return redirect()
             ->route('users.index')
@@ -46,18 +45,29 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if ($user->id === 1) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'Cannot edit super admin user');
+        }
+
         $roles = Role::all();
         return view('users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, User $user)
     {
+        if ($user->id === 1) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'Cannot edit super admin user');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,id'
+            'roles' => 'required|array|exists:roles,id'
         ]);
 
         $user->update([
@@ -78,6 +88,14 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        if ($user->id === 1) {
+            return back()->with('error', 'Cannot delete super admin user');
+        }
+
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Cannot delete your own account');
+        }
+
         $user->delete();
 
         return redirect()
