@@ -22,7 +22,7 @@ class SaleController extends Controller
     public function create()
     {
         $products = Product::where('stock', '>', 0)->orderBy('name')->get();
-        $customers = Customer::orderBy('name')->get();
+        $customers = Customer::orderBy('nama')->get();
 
         // Generate invoice number
         $lastSale = Sale::whereDate('created_at', Carbon::today())->latest()->first();

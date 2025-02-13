@@ -7,15 +7,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
-        'name',
-        'phone',
-        'email',
-        'address',
-        'type',
-        'notes'
+        'nik',
+        'nama',
+        'alamat',
+        'desa_id',
+        'kecamatan_id',
+        'kabupaten_id',
+        'provinsi_id',
+        'desa_nama',
+        'kecamatan_nama',
+        'kabupaten_nama',
+        'provinsi_nama'
     ];
 
     public function sales()

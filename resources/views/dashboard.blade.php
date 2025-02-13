@@ -109,7 +109,7 @@
                     <div class="p-6">
                         <h3 class="text-lg font-medium leading-6 text-gray-900">Sales Last 7 Days</h3>
                         <div class="mt-2">
-                            <div class="h-[300px]">
+                            <div class="h-96">
                                 <canvas id="dailySalesChart"></canvas>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                     <div class="p-6">
                         <h3 class="text-lg font-medium leading-6 text-gray-900">Top Selling Products</h3>
                         <div class="mt-2">
-                            <div class="h-[300px]">
+                            <div class="h-96">
                                 <canvas id="topProductsChart"></canvas>
                             </div>
                         </div>
@@ -270,33 +270,19 @@
         </div>
     </div>
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             // Format Rupiah
             function formatRupiah(number) {
                 return 'Rp ' + new Intl.NumberFormat('id-ID').format(number);
             }
-            // Animate Numbers
-            function animateValue(element, start, end, duration) {
-                if (start === end) return;
-                const range = end - start;
-                let current = start;
-                const increment = end > start ? 1 : -1;
-                const stepTime = Math.abs(Math.floor(duration / range));
-                const timer = setInterval(() => {
-                    current += increment;
-                    element.textContent = formatRupiah(current);
-                    if (current === end) {
-                        clearInterval(timer);
-                    }
-                }, stepTime);
-            }
 
             // Daily Sales Chart
             const dailySalesChart = new Chart(
-                document.getElementById('dailySalesChart').getContext('2d'), {
+                document.getElementById('dailySalesChart'), {
                     type: 'line',
                     data: {
-                        labels: @json($dailySales->pluck('date')->map(fn($date) => Carbon\Carbon::parse($date)->format('d/m'))),
+                        labels: @json($dailySales->pluck('date')->map(fn($date) => \Carbon\Carbon::parse($date)->format('d/m'))),
                         datasets: [{
                             label: 'Daily Sales',
                             data: @json($dailySales->pluck('total')),
@@ -304,31 +290,19 @@
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             borderWidth: 2,
                             fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: 'rgb(59, 130, 246)',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
+                            tension: 0.4
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: {
-                                display: false
-                            },
                             tooltip: {
-                                mode: 'index',
-                                intersect: false,
                                 callbacks: {
                                     label: function(context) {
                                         return formatRupiah(context.raw);
                                     }
-                                },
-                                padding: 10,
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                                }
                             }
                         },
                         scales: {
@@ -338,20 +312,8 @@
                                     callback: function(value) {
                                         return formatRupiah(value);
                                     }
-                                },
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
                                 }
                             }
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
                         }
                     }
                 }
@@ -359,106 +321,37 @@
 
             // Top Products Chart
             const topProductsChart = new Chart(
-                document.getElementById('topProductsChart').getContext('2d'), {
+                document.getElementById('topProductsChart'), {
                     type: 'bar',
                     data: {
                         labels: @json($topProducts->pluck('name')),
                         datasets: [{
                             label: 'Units Sold',
-                            data: @json($topProducts->pluck('sale_details_sum_quantity')),
+                            data: @json($topProducts->pluck('total_sold')), // Changed from sale_details_sum_quantity
                             backgroundColor: [
-                                'rgba(59, 130, 246, 0.8)', // Blue
-                                'rgba(16, 185, 129, 0.8)', // Green
-                                'rgba(245, 158, 11, 0.8)', // Yellow
-                                'rgba(239, 68, 68, 0.8)', // Red
-                                'rgba(139, 92, 246, 0.8)' // Purple
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(139, 92, 246, 0.8)'
                             ],
-                            borderColor: [
-                                'rgb(59, 130, 246)',
-                                'rgb(16, 185, 129)',
-                                'rgb(245, 158, 11)',
-                                'rgb(239, 68, 68)',
-                                'rgb(139, 92, 246)'
-                            ],
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            maxBarThickness: 50
+                            borderWidth: 1
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.raw} units sold`;
-                                    }
-                                },
-                                padding: 10,
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)'
-                            }
-                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
                                 ticks: {
                                     stepSize: 1
-                                },
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
                                 }
                             }
                         }
                     }
                 }
             );
-
-            // Animate numbers on load
-            document.addEventListener('DOMContentLoaded', function() {
-                // Animate today's sales
-                const todaySalesEl = document.querySelector('[data-sales-today]');
-                animateValue(todaySalesEl, 0, {{ $totalSalesToday }}, 1000);
-
-                // Animate monthly sales
-                const monthlySalesEl = document.querySelector('[data-sales-month]');
-                animateValue(monthlySalesEl, 0, {{ $totalSalesThisMonth }}, 1500);
-
-                // Highlight low stock rows
-                document.querySelectorAll('.low-stock-row').forEach(row => {
-                    const stock = parseInt(row.dataset.stock);
-                    const minStock = parseInt(row.dataset.minStock);
-                    if (stock <= minStock) {
-                        row.classList.add('bg-red-50');
-                    }
-                });
-            });
-
-            // Live clock
-            function updateClock() {
-                const now = new Date();
-                const clockEl = document.getElementById('live-clock');
-                if (clockEl) {
-                    clockEl.textContent = now.toLocaleTimeString('id-ID');
-                }
-            }
-            setInterval(updateClock, 1000);
-            updateClock();
-
-            // Auto refresh dashboard
-            setTimeout(function() {
-                window.location.reload();
-            }, 300000); // Refresh every 5 minutes
         </script>
     @endpush
 </x-app-layout>

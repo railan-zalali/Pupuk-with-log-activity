@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number')->unique();
             $table->foreignId('user_id')->constrained();
+            $table->foreignId('customer_id')->nullable();
             $table->date('date');
             $table->decimal('total_amount', 12, 2);
             $table->decimal('paid_amount', 12, 2);

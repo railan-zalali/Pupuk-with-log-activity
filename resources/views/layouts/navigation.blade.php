@@ -19,21 +19,9 @@
                     <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
                         {{ __('Products') }}
                     </x-nav-link>
-
-                    <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
-                        {{ __('Suppliers') }}
-                    </x-nav-link>
-
                     <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.*')">
                         {{ __('Customers') }}
                     </x-nav-link>
-
-                    <x-nav-link :href="route('purchases.index')" :active="request()->routeIs('purchases.*')">
-                        {{ __('Purchases') }}
-                    </x-nav-link>
-
-
-
 
                     {{-- <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                         {{ __('Users') }}
@@ -43,6 +31,14 @@
                         {{ __('Roles') }}
                     </x-nav-link> --}}
                     @if (auth()->user()->hasRole('admin'))
+                        <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
+                            {{ __('Suppliers') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('purchases.index')" :active="request()->routeIs('purchases.*')">
+                            {{ __('Purchases') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
                             {{ __('Categories') }}
                         </x-nav-link>

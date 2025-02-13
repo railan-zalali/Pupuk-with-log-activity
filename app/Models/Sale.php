@@ -12,7 +12,7 @@ class Sale extends Model
     protected $fillable = [
         'invoice_number',
         'user_id',
-        'customer_id', // Tambahkan ini
+        'customer_id',
         'date',
         'total_amount',
         'paid_amount',

@@ -5,26 +5,21 @@
         </h2>
     </x-slot>
 
+    {{-- Add these styles in the head --}}
+    @push('styles')
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    @endpush
+
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="mb-4 flex justify-between">
-                        <div>
-                            <a href="{{ route('customers.create') }}"
-                                class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
-                                Add New Customer
-                            </a>
-                        </div>
-
-                        {{-- Search Form --}}
-                        <form method="GET" action="{{ route('customers.index') }}" class="flex gap-2">
-                            <x-text-input type="search" name="search" value="{{ request('search') }}"
-                                placeholder="Search customers..." />
-                            <x-primary-button type="submit">
-                                Search
-                            </x-primary-button>
-                        </form>
+                    <div class="mb-4">
+                        <a href="{{ route('customers.create') }}"
+                            class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                            Add New Customer
+                        </a>
                     </div>
 
                     @if (session('success'))
@@ -47,80 +42,96 @@
                     @endif
 
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table id="customers-table" class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
+                                        NIK</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
                                         Name</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Contact</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Type</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Total Sales</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
+                                        Address</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
+                                        Village</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
+                                        District</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
+                                        Regency</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
+                                        Province</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
                                         Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200 bg-white">
-                                @forelse ($customers as $customer)
-                                    <tr>
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ $customer->name }}</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="text-sm text-gray-900">{{ $customer->phone }}</div>
-                                            <div class="text-sm text-gray-500">{{ $customer->email }}</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="inline-flex rounded-full px-2 text-xs font-semibold leading-5
-                                                {{ $customer->type === 'wholesale' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800' }}">
-                                                {{ ucfirst($customer->type) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ $customer->sales_count }} sales
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                                            <a href="{{ route('customers.show', $customer) }}"
-                                                class="text-blue-600 hover:text-blue-900">View</a>
-                                            <a href="{{ route('customers.edit', $customer) }}"
-                                                class="ml-2 text-indigo-600 hover:text-indigo-900">Edit</a>
-                                            @if ($customer->sales_count === 0)
-                                                <form action="{{ route('customers.destroy', $customer) }}"
-                                                    method="POST" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="ml-2 text-red-600 hover:text-red-900"
-                                                        onclick="return confirm('Are you sure you want to delete this customer?')">
-                                                        Delete
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                                            No customers found.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
                         </table>
-                    </div>
-
-                    <div class="mt-4">
-                        {{ $customers->links() }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- Add these scripts before closing body tag --}}
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#customers-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "{{ route('customers.index') }}",
+                    columns: [{
+                            data: 'nik',
+                            name: 'nik'
+                        },
+                        {
+                            data: 'nama',
+                            name: 'nama'
+                        },
+                        {
+                            data: 'alamat',
+                            name: 'alamat'
+                        },
+                        {
+                            data: 'desa_nama',
+                            name: 'desa_nama'
+                        },
+                        {
+                            data: 'kecamatan_nama',
+                            name: 'kecamatan_nama'
+                        },
+                        {
+                            data: 'kabupaten_nama',
+                            name: 'kabupaten_nama'
+                        },
+                        {
+                            data: 'provinsi_nama',
+                            name: 'provinsi_nama'
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ],
+                    dom: 'Bfrtip',
+                    layout: {
+                        topStart: {
+                            buttons: [
+                                'copy', 'csv', 'excel', 'pdf', 'print'
+                            ]
+                        }
+                    },
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>

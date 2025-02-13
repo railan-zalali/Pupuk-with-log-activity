@@ -13,12 +13,17 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('phone')->unique()->nullable();
-            $table->string('email')->unique()->nullable();
-            $table->text('address')->nullable();
-            $table->enum('type', ['retail', 'wholesale'])->default('retail');
-            $table->text('notes')->nullable();
+            $table->string('nik')->unique();
+            $table->string('nama');
+            $table->text('alamat')->nullable();
+            $table->string('desa_id');
+            $table->string('kecamatan_id');
+            $table->string('kabupaten_id');
+            $table->string('provinsi_id');
+            $table->string('desa_nama');
+            $table->string('kecamatan_nama');
+            $table->string('kabupaten_nama');
+            $table->string('provinsi_nama');
             $table->timestamps();
             $table->softDeletes();
         });

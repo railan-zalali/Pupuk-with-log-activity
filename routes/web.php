@@ -13,9 +13,9 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])
 //     ->middleware(['auth'])
@@ -77,6 +77,7 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     // Dashboard
+    Route::get('/', [DashboardController::class, 'index']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Profile routes
@@ -109,6 +110,8 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(['permission:manage-customers'])->group(function () {
         Route::resource('customers', CustomerController::class);
+        Route::get('customers/data', [CustomerController::class, 'data'])->name('customers.data');
+        Route::get('customers/export', [CustomerController::class, 'export'])->name('customers.export');
         Route::get('customers-search', [CustomerController::class, 'search'])
             ->name('customers.search');
     });
