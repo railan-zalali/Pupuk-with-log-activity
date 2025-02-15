@@ -22,7 +22,7 @@
                             <dl class="mt-4 space-y-4">
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Name</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->name }}</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->nama }}</dd>
                                 </div>
 
                                 <div>

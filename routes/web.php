@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function () {
         Route::get('customers/export', [CustomerController::class, 'export'])->name('customers.export');
         Route::get('customers-search', [CustomerController::class, 'search'])
             ->name('customers.search');
+        Route::post('/customers/import', [CustomerController::class, 'import'])->name('customers.import');
     });
 
     Route::middleware(['permission:manage-purchases'])->group(function () {

@@ -1,8 +1,41 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Add New Customer') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                {{ __('Add New Customer') }}
+            </h2>
+            <!-- Import Form -->
+            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                <div class="p-0 text-gray-900">
+                    @if (session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                            role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('customers.import') }}" method="POST" enctype="multipart/form-data"
+                        class="flex items-center">
+                        @csrf
+                        <div>
+                            <x-input-label for="excel_file" :value="__('Import Customers from Excel')" />
+                            <input id="excel_file" name="excel_file" type="file" accept=".xlsx,.xls"
+                                class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                                file:rounded-md file:border-0 file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                required />
+                            <x-input-error :messages="$errors->get('excel_file')" class="mt-2" />
+                        </div>
+
+                        <div class="ml-4">
+                            <x-primary-button>
+                                {{ __('Import Customers') }}
+                            </x-primary-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     @push('styles')

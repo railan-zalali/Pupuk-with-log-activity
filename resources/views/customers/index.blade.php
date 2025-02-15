@@ -1,8 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Customers') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                {{ __('Customers') }}
+            </h2>
+            <div>
+                <a href="{{ route('customers.create') }}"
+                    class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                    Add New Customer
+                </a>
+            </div>
+        </div>
     </x-slot>
 
     {{-- Add these styles in the head --}}
@@ -15,12 +23,7 @@
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="mb-4">
-                        <a href="{{ route('customers.create') }}"
-                            class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
-                            Add New Customer
-                        </a>
-                    </div>
+
 
                     @if (session('success'))
                         <div class="mb-4 rounded-md bg-green-50 p-4">

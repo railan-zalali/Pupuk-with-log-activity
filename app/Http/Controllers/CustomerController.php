@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CustomersImport;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
@@ -133,5 +135,15 @@ class CustomerController extends Controller
             });
 
         return response()->json(['results' => $customers]);
+    }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new CustomersImport, $request->file('excel_file'));
+
+        return redirect()->back()->with('success', 'Data pelanggan berhasil diimpor!');
     }
 }
