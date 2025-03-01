@@ -31,6 +31,10 @@
                 </div>
             @endif
 
+            @push('styles')
+                <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+            @endpush
+
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <form action="{{ route('sales.store') }}" method="POST" id="saleForm">
@@ -50,11 +54,26 @@
                                 <x-input-error :messages="$errors->get('date')" class="mt-2" />
                             </div>
 
-                            <div>
+                            {{-- <div>
                                 <x-input-label for="customer_name" value="Customer Name" />
                                 <x-text-input id="customer_name" name="customer_name" type="text"
                                     class="mt-1 block w-full" :value="old('customer_name')" />
                                 <x-input-error :messages="$errors->get('customer_name')" class="mt-2" />
+                            </div> --}}
+
+                            <div>
+                                <x-input-label for="customer_select" value="Customer Name" />
+                                <select id="customer_select" name="customer_id"
+                                    class="select2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="">-- Select Customer or Type New Name --</option>
+                                    @foreach ($customers as $customer)
+                                        <option value="{{ $customer->id }}">{{ $customer->nama }} - {{ $customer->nik }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="customer_name" id="new_customer_name">
+                                <div class="mt-1 text-xs text-gray-500">Select existing customer or type a new name
+                                </div>
                             </div>
 
                             <div>
@@ -151,10 +170,12 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function createItemRow() {
-            return `
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            function createItemRow() {
+                return `
                 <tr>
                     <td class="px-6 py-4">
                         <select name="product_id[]" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="updatePrice(this)">
@@ -179,110 +200,154 @@
                     </td>
                 </tr>
             `;
-        }
-
-        function updatePrice(select) {
-            const tr = select.closest('tr');
-            const priceInput = tr.querySelector('input[name="selling_price[]"]');
-            const stockDisplay = tr.querySelector('.available-stock');
-            const quantityInput = tr.querySelector('input[name="quantity[]"]');
-            const selectedOption = select.options[select.selectedIndex];
-
-            if (selectedOption.value) {
-                const price = selectedOption.dataset.price;
-                const stock = selectedOption.dataset.stock;
-                priceInput.value = price || 0;
-                stockDisplay.textContent = stock;
-                quantityInput.max = stock;
-            } else {
-                priceInput.value = 0;
-                stockDisplay.textContent = 0;
-                quantityInput.max = 0;
             }
 
-            calculateSubtotal(priceInput);
-        }
+            function updatePrice(select) {
+                const tr = select.closest('tr');
+                const priceInput = tr.querySelector('input[name="selling_price[]"]');
+                const stockDisplay = tr.querySelector('.available-stock');
+                const quantityInput = tr.querySelector('input[name="quantity[]"]');
+                const selectedOption = select.options[select.selectedIndex];
 
-        function calculateSubtotal(input) {
-            const tr = input.closest('tr');
-            const quantity = tr.querySelector('input[name="quantity[]"]').value || 0;
-            const price = tr.querySelector('input[name="selling_price[]"]').value || 0;
-            const subtotal = quantity * price;
-            tr.querySelector('.subtotal').textContent = formatRupiah(subtotal);
-            calculateTotal();
-        }
+                if (selectedOption.value) {
+                    const price = selectedOption.dataset.price;
+                    const stock = selectedOption.dataset.stock;
+                    priceInput.value = price || 0;
+                    stockDisplay.textContent = stock;
+                    quantityInput.max = stock;
+                } else {
+                    priceInput.value = 0;
+                    stockDisplay.textContent = 0;
+                    quantityInput.max = 0;
+                }
 
-        function calculateTotal() {
-            const subtotals = document.querySelectorAll('.subtotal');
-            let total = 0;
-            subtotals.forEach(subtotal => {
-                const value = subtotal.textContent.replace('Rp ', '').replace(/\./g, '');
-                total += parseFloat(value) || 0;
-            });
-            document.getElementById('totalAmount').textContent = formatRupiah(total);
-            calculateChange();
-        }
-
-        function calculateChange() {
-            const totalText = document.getElementById('totalAmount').textContent;
-            const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
-            const paid = parseFloat(document.getElementById('paid_amount').value) || 0;
-            const change = paid - total;
-            document.getElementById('changeAmount').textContent = formatRupiah(Math.max(0, change));
-
-            // Validate minimum paid amount
-            const submitButton = document.querySelector('button[type="submit"]');
-            if (paid < total) {
-                submitButton.disabled = true;
-                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-            } else {
-                submitButton.disabled = false;
-                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                calculateSubtotal(priceInput);
             }
-        }
 
-        function formatRupiah(number) {
-            return 'Rp ' + number.toLocaleString('id-ID');
-        }
-
-        function addItem() {
-            const tbody = document.getElementById('saleItems');
-            tbody.insertAdjacentHTML('beforeend', createItemRow());
-        }
-
-        function removeItem(button) {
-            const tbody = document.getElementById('saleItems');
-            if (tbody.children.length > 1) {
-                button.closest('tr').remove();
+            function calculateSubtotal(input) {
+                const tr = input.closest('tr');
+                const quantity = tr.querySelector('input[name="quantity[]"]').value || 0;
+                const price = tr.querySelector('input[name="selling_price[]"]').value || 0;
+                const subtotal = quantity * price;
+                tr.querySelector('.subtotal').textContent = formatRupiah(subtotal);
                 calculateTotal();
             }
-        }
 
-        // Form validation before submit
-        document.getElementById('saleForm').addEventListener('submit', function(e) {
-            const tbody = document.getElementById('saleItems');
-            if (tbody.children.length === 0) {
-                e.preventDefault();
-                alert('Please add at least one item');
-                return false;
+            function calculateTotal() {
+                const subtotals = document.querySelectorAll('.subtotal');
+                let total = 0;
+                subtotals.forEach(subtotal => {
+                    const value = subtotal.textContent.replace('Rp ', '').replace(/\./g, '');
+                    total += parseFloat(value) || 0;
+                });
+                document.getElementById('totalAmount').textContent = formatRupiah(total);
+                calculateChange();
             }
 
-            const totalText = document.getElementById('totalAmount').textContent;
-            const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
-            const paid = parseFloat(document.getElementById('paid_amount').value) || 0;
+            function calculateChange() {
+                const totalText = document.getElementById('totalAmount').textContent;
+                const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
+                const paid = parseFloat(document.getElementById('paid_amount').value) || 0;
+                const change = paid - total;
+                document.getElementById('changeAmount').textContent = formatRupiah(Math.max(0, change));
 
-            if (paid < total) {
-                e.preventDefault();
-                alert('Paid amount must be greater than or equal to total amount');
-                return false;
+                // Validate minimum paid amount
+                const submitButton = document.querySelector('button[type="submit"]');
+                if (paid < total) {
+                    submitButton.disabled = true;
+                    submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
             }
 
-            return true;
-        });
+            function formatRupiah(number) {
+                return 'Rp ' + number.toLocaleString('id-ID');
+            }
 
-        // Add first item on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            addItem();
-        });
-    </script>
+            function addItem() {
+                const tbody = document.getElementById('saleItems');
+                tbody.insertAdjacentHTML('beforeend', createItemRow());
+            }
+
+            function removeItem(button) {
+                const tbody = document.getElementById('saleItems');
+                if (tbody.children.length > 1) {
+                    button.closest('tr').remove();
+                    calculateTotal();
+                }
+            }
+
+            // Form validation before submit
+            document.getElementById('saleForm').addEventListener('submit', function(e) {
+                const tbody = document.getElementById('saleItems');
+                if (tbody.children.length === 0) {
+                    e.preventDefault();
+                    alert('Please add at least one item');
+                    return false;
+                }
+
+                const totalText = document.getElementById('totalAmount').textContent;
+                const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
+                const paid = parseFloat(document.getElementById('paid_amount').value) || 0;
+
+                if (paid < total) {
+                    e.preventDefault();
+                    alert('Paid amount must be greater than or equal to total amount');
+                    return false;
+                }
+
+                return true;
+            });
+
+            // Add first item on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                addItem();
+            });
+            $('#customer_select').select2({
+                tags: true,
+                createTag: function(params) {
+                    return {
+                        id: 'new:' + params.term,
+                        text: params.term,
+                        newTag: true
+                    }
+                },
+                templateResult: function(data) {
+                    var $result = $("<span></span>");
+
+                    if (data.newTag) {
+                        $result.text(data.text + " (Tambahkan Customer Baru)");
+                        $result.addClass("text-blue-600");
+                    } else {
+                        $result.text(data.text);
+                    }
+
+                    return $result;
+                }
+            });
+
+            // Handle form submission to separate customer_id vs customer_name
+            $('#saleForm').on('submit', function() {
+                var customerSelect = $('#customer_select');
+                var selectedOption = customerSelect.val();
+
+                // If the selected value starts with 'new:', it's a new customer name
+                if (selectedOption && selectedOption.startsWith('new:')) {
+                    // Extract the name part
+                    var newName = selectedOption.substring(4);
+
+                    // Set the new customer name in the hidden input
+                    $('#new_customer_name').val(newName);
+
+                    // Reset the customer_id to empty since we're creating a new customer
+                    customerSelect.val('');
+                }
+
+                return true;
+
+            });
+        </script>
+    @endpush
 </x-app-layout>

@@ -9,6 +9,7 @@ use App\Traits\ReportExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -99,78 +100,115 @@ class ReportController extends Controller
 
     public function profitLoss(Request $request)
     {
-        $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : Carbon::now()->startOfMonth();
-        $endDate = $request->get('end_date') ? Carbon::parse($request->get('end_date'))->endOfDay() : Carbon::now()->endOfDay();
+        try {
+            // Validasi input date
+            $startDate = $request->get('start_date')
+                ? Carbon::parse($request->get('start_date'))->startOfDay()
+                : Carbon::now()->startOfMonth();
 
-        // Sales Data
-        $sales = Sale::with('user')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->whereNull('deleted_at')
-            ->get();
+            $endDate = $request->get('end_date')
+                ? Carbon::parse($request->get('end_date'))->endOfDay()
+                : Carbon::now()->endOfDay();
 
-        $totalSales = $sales->sum('total_amount');
+            // Validasi range tanggal
+            if ($startDate > $endDate) {
+                return back()->with('error', 'Start date cannot be later than end date');
+            }
 
-        // Purchase Data
-        $purchases = Purchase::with('supplier')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->whereNull('deleted_at')
-            ->get();
+            // Optimasi query Sales dengan select specific columns
+            $sales = Sale::query()
+                ->select([
+                    'id',
+                    'invoice_number',
+                    'total_amount',
+                    'created_at',
+                    'user_id'
+                ])
+                ->with([
+                    'user:id,name',  // Select specific columns
+                ])
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereNull('deleted_at')
+                ->get();
 
-        $totalPurchases = $purchases->sum('total_amount');
+            // Optimasi query Purchases dengan select specific columns
+            $purchases = Purchase::query()
+                ->select([
+                    'id',
+                    'invoice_number',
+                    'total_amount',
+                    'created_at',
+                    'supplier_id'
+                ])
+                ->with([
+                    'supplier:id,name',  // Select specific columns
+                ])
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereNull('deleted_at')
+                ->get();
 
-        // Calculate Gross Profit
-        $grossProfit = $totalSales - $totalPurchases;
+            // Hitung total menggunakan query builder untuk performa lebih baik
+            $totalSales = $sales->sum('total_amount');
+            $totalPurchases = $purchases->sum('total_amount');
+            $grossProfit = $totalSales - $totalPurchases;
 
-        // Data untuk tampilan dan export
-        $data = [
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'totalSales' => $totalSales,
-            'totalPurchases' => $totalPurchases,
-            'grossProfit' => $grossProfit,
-            'sales' => $sales,
-            'purchases' => $purchases,
-            'summary' => [
-                'total_sales' => $totalSales,
-                'total_purchases' => $totalPurchases,
-                'gross_profit' => $grossProfit,
-                'total_transactions' => $sales->count() + $purchases->count()
-            ],
-            'headers' => [
-                'Date' => 'date',
-                'Type' => 'type',
-                'Reference' => 'reference',
-                'Amount' => 'amount'
-            ],
-            'items' => collect($sales)->map(function ($sale) {
-                return [
-                    'date' => $sale->created_at->format('Y-m-d'),
-                    'type' => 'Sale',
-                    'reference' => $sale->invoice_number,
-                    'amount' => $sale->total_amount
-                ];
-            })->concat(
-                collect($purchases)->map(function ($purchase) {
+            // Prepare data untuk view dengan cara yang lebih efisien
+            $items = collect()
+                ->concat($sales->map(function ($sale) {
+                    return [
+                        'date' => $sale->created_at->format('Y-m-d'),
+                        'type' => 'Sale',
+                        'reference' => $sale->invoice_number,
+                        'amount' => $sale->total_amount
+                    ];
+                }))
+                ->concat($purchases->map(function ($purchase) {
                     return [
                         'date' => $purchase->created_at->format('Y-m-d'),
                         'type' => 'Purchase',
                         'reference' => $purchase->invoice_number,
                         'amount' => -$purchase->total_amount
                     ];
-                })
-            )->sortByDesc('date'),
-            'date' => now()
-        ];
+                }))
+                ->sortByDesc('date');
 
-        // Handle export atau tampilkan view
-        if (request('type')) {
-            return $this->handleExport(
-                $data,
-                'profit-loss',
-                'profit_loss_report_' . $startDate->format('Y-m-d') . '_' . $endDate->format('Y-m-d')
-            );
+            $data = [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'totalSales' => $totalSales,
+                'totalPurchases' => $totalPurchases,
+                'grossProfit' => $grossProfit,
+                'sales' => $sales,
+                'purchases' => $purchases,
+                'summary' => [
+                    'total_sales' => $totalSales,
+                    'total_purchases' => $totalPurchases,
+                    'gross_profit' => $grossProfit,
+                    'total_transactions' => $sales->count() + $purchases->count()
+                ],
+                'headers' => [
+                    'Date' => 'date',
+                    'Type' => 'type',
+                    'Reference' => 'reference',
+                    'Amount' => 'amount'
+                ],
+                'items' => $items,
+                'date' => now()
+            ];
+
+            // Handle export atau tampilkan view
+            if ($request->has('type')) {
+                return $this->handleExport(
+                    $data,
+                    'profit-loss',
+                    'profit_loss_report_' . $startDate->format('Y-m-d') . '_' . $endDate->format('Y-m-d')
+                );
+            }
+
+            return view('reports.profit-loss', $data);
+        } catch (\Exception $e) {
+            Log::error('Error in profit loss report: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while generating the report');
         }
-
-        return view('reports.profit-loss', $data);
     }
 }

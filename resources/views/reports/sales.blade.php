@@ -130,7 +130,6 @@
                                         {{ ucfirst($sale->payment_method) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                    <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="inline-flex rounded-full px-2 text-xs font-semibold leading-5 {{ $sale->trashed() ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
                                             {{ $sale->trashed() ? 'Void' : 'Completed' }}

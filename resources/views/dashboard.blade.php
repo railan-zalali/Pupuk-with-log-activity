@@ -23,7 +23,8 @@
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="truncate text-sm font-medium text-gray-500">Today's Sales</dt>
-                                    <dd class="text-lg font-medium text-gray-900" data-sales-today>Rp 0</dd>
+                                    <dd class="text-lg font-medium text-gray-900">Rp
+                                        {{ number_format($totalSalesToday, 0, ',', '.') }}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -44,7 +45,8 @@
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="truncate text-sm font-medium text-gray-500">This Month's Sales</dt>
-                                    <dd class="text-lg font-medium text-gray-900" data-sales-month>Rp 0</dd>
+                                    <dd class="text-lg font-medium text-gray-900">Rp
+                                        {{ number_format($totalSalesThisMonth, 0, ',', '.') }}</dd>
                                 </dl>
                             </div>
                         </div>

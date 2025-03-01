@@ -38,10 +38,9 @@ class SupplierController extends Controller
 
     public function show(Supplier $supplier)
     {
-        $supplier->load(['purchases' => function ($query) {
-            $query->with('purchaseDetails.product')->latest();
-        }]);
-
+        $supplier = Supplier::with(['purchases' => function ($query) {
+            $query->with(['purchaseDetails.product'])->latest();
+        }])->findOrFail($supplier->id);
         return view('suppliers.show', compact('supplier'));
     }
 

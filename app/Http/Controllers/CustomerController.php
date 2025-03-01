@@ -12,32 +12,48 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $customers = Customer::withCount(['sales' => function ($query) {
+        $customers = Customer::query()
+            ->withCount(['sales' => function ($query) {
+                // Hanya hitung sales yang tidak di-soft delete
                 $query->whereNull('deleted_at');
-            }]);
+            }])
+            ->withSum(['sales' => function ($query) {
+                // Hanya jumlahkan sales yang tidak di-soft delete
+                $query->whereNull('deleted_at');
+            }], 'total_amount')
+            ->when($request->get('search'), function ($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->get();
 
-            return DataTables::of($customers)
-                ->addColumn('action', function ($customer) {
-                    $buttons = '<a href="' . route('customers.show', $customer) . '" class="text-blue-600 hover:text-blue-900">View</a>';
-                    $buttons .= '<a href="' . route('customers.edit', $customer) . '" class="ml-2 text-indigo-600 hover:text-indigo-900">Edit</a>';
-
-                    if ($customer->sales_count === 0) {
-                        $buttons .= '<form action="' . route('customers.destroy', $customer) . '" method="POST" class="inline">'
-                            . csrf_field()
-                            . method_field('DELETE')
-                            . '<button type="submit" class="ml-2 text-red-600 hover:text-red-900" onclick="return confirm(\'Are you sure you want to delete this customer?\')">'
-                            . 'Delete</button></form>';
-                    }
-
-                    return $buttons;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+        // Jika request AJAX, kembalikan JSON
+        if ($request->ajax() || $request->get('_ajax')) {
+            return response()->json($customers);
         }
 
-        return view('customers.index');
+        // Jika bukan request AJAX, kembalikan view
+        return view('customers.index', compact('customers'));
     }
+    // public function index(Request $request)
+    // {
+    //     // Ambil parameter pencarian (jika ada)
+    //     $search = $request->get('search');
+
+    //     // Query untuk mengambil data pelanggan, jika ada pencarian, filter berdasarkan nama atau kontak
+    //     $customers = Customer::query()
+    //         ->when($search, function ($query, $search) {
+    //             return $query->where('name', 'like', "%{$search}%")
+    //                 ->orWhere('phone', 'like', "%{$search}%")
+    //                 ->orWhere('email', 'like', "%{$search}%");
+    //         })
+    //         // Tampilkan data dengan paginasi, misalnya 10 pelanggan per halaman
+    //         ->paginate(10);
+
+    //     // Kirim data pelanggan ke view
+    //     return view('customers.index', compact('customers'));
+    // }
 
 
     public function create()
@@ -93,15 +109,19 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        $customer->load(['sales' => function ($query) {
+        $customer = Customer::with(['sales' => function ($query) {
             $query->latest();
-        }]);
+        }])->findOrFail($customer->id);
+
 
         return view('customers.show', compact('customer'));
     }
 
     public function edit(Customer $customer)
     {
+        $customer = Customer::findOrFail($customer->id);
+        // dd($customer);
+        // die();
         return view('customers.edit', compact('customer'));
     }
 

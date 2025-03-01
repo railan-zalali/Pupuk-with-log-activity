@@ -64,8 +64,10 @@ class PurchaseController extends Controller
         $purchase->notes = $request->notes;
         $purchase->save();
 
-        // Simpan detail dan update stok
+        $products = Product::findMany($request->product_id);
+
         foreach ($request->product_id as $key => $productId) {
+            $product = $products->firstWhere('id', $productId);
             $quantity = $request->quantity[$key];
             $price = $request->purchase_price[$key];
 
@@ -78,7 +80,6 @@ class PurchaseController extends Controller
             ]);
 
             // Update stok produk
-            $product = Product::find($productId);
             $beforeStock = $product->stock;
             $product->stock += $quantity;
             $product->save();
@@ -94,6 +95,7 @@ class PurchaseController extends Controller
                 'notes' => 'Pembelian dari supplier'
             ]);
         }
+
 
         return redirect()
             ->route('purchases.index')
@@ -124,6 +126,8 @@ class PurchaseController extends Controller
         $purchase->load('purchaseDetails.product');
 
         // Batalkan setiap detail pembelian
+        $purchase = Purchase::with('purchaseDetails.product')->findOrFail($purchase->id);
+
         foreach ($purchase->purchaseDetails as $detail) {
             $product = $detail->product;
             $beforeStock = $product->stock;
@@ -143,6 +147,7 @@ class PurchaseController extends Controller
                 'notes' => 'Pembatalan pembelian'
             ]);
         }
+
 
         // Soft delete pembelian
         $purchase->delete();

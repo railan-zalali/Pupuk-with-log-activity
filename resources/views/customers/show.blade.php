@@ -21,42 +21,39 @@
                             <h3 class="text-lg font-medium text-gray-900">Customer Information</h3>
                             <dl class="mt-4 space-y-4">
                                 <div>
+                                    <dt class="text-sm font-medium text-gray-500">NIK</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->nik }}</dd>
+                                </div>
+
+                                <div>
                                     <dt class="text-sm font-medium text-gray-500">Name</dt>
                                     <dd class="mt-1 text-sm text-gray-900">{{ $customer->nama }}</dd>
                                 </div>
 
                                 <div>
-                                    <dt class="text-sm font-medium text-gray-500">Phone</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->phone ?? '-' }}</dd>
-                                </div>
-
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Email</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->email ?? '-' }}</dd>
-                                </div>
-
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Type</dt>
-                                    <dd class="mt-1">
-                                        <span
-                                            class="inline-flex rounded-full px-2 text-xs font-semibold leading-5
-                                            {{ $customer->type === 'wholesale' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800' }}">
-                                            {{ ucfirst($customer->type) }}
-                                        </span>
-                                    </dd>
-                                </div>
-
-                                <div>
                                     <dt class="text-sm font-medium text-gray-500">Address</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->address ?? '-' }}</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->alamat ?? '-' }}</dd>
                                 </div>
 
-                                @if ($customer->notes)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Notes</dt>
-                                        <dd class="mt-1 text-sm text-gray-900">{{ $customer->notes }}</dd>
-                                    </div>
-                                @endif
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Village</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->desa_nama }}</dd>
+                                </div>
+
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">District</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->kecamatan_nama }}</dd>
+                                </div>
+
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Regency</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->kabupaten_nama }}</dd>
+                                </div>
+
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Province</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $customer->provinsi_nama }}</dd>
+                                </div>
                             </dl>
                         </div>
 
@@ -85,7 +82,7 @@
                     <div class="mt-8">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-medium text-gray-900">Recent Sales</h3>
-                            <a href="{{ route('sales.create', ['customer_id' => $customer->id]) }}"
+                            <a href="{{ route('sales.create') }}"
                                 class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 Create New Sale
                             </a>
@@ -113,7 +110,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
-                                    @forelse($customer->sales()->latest()->take(5)->get() as $sale)
+                                    @forelse($customer->sales as $sale)
                                         <tr>
                                             <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                                 {{ $sale->created_at->format('d/m/Y H:i') }}

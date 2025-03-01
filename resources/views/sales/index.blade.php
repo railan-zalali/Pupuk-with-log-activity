@@ -72,7 +72,9 @@
                                         </td>
 
                                         <td class="px-6 py-4">{{ $sale->invoice_number }}</td>
-                                        <td class="px-6 py-4">{{ $sale->customer_name ?? '-' }}</td>
+                                        {{-- <td class="px-6 py-4">{{ $sale->sale->name ?? '-' }}</td> --}}
+                                        {{-- <td class="px-6 py-4">{{ dump($sale->customer) ?? '-' }}</td> --}}
+                                        <td class="px-6 py-4">{{ $sale->customer->nama ?? '-' }}</td>
                                         <td class="px-6 py-4">Rp {{ number_format($sale->total_amount, 0, ',', '.') }}
                                         </td>
                                         <td class="px-6 py-4">

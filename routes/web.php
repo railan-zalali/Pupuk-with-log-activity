@@ -139,3 +139,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 require __DIR__ . '/auth.php';
+Route::get('search/products', [ProductController::class, 'search'])->name('products.search');

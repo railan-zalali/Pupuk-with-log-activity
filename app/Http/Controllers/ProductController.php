@@ -67,9 +67,9 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['category', 'stockMovements' => function ($query) {
+        $product = Product::with(['category', 'stockMovements' => function ($query) {
             $query->latest();
-        }]);
+        }])->findOrFail($product->id);
         return view('products.show', compact('product'));
     }
 
@@ -142,5 +142,28 @@ class ProductController extends Controller
         ]);
 
         return back()->with('success', 'Stock updated successfully');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->get('query');
+
+        $products = Product::query()
+            ->with('category')
+            ->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $products
+        ]);
     }
 }

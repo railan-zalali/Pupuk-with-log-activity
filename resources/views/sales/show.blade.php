@@ -85,7 +85,7 @@
                             <dl class="mt-4 space-y-2">
                                 <div>
                                     <dt class="font-medium text-gray-500">Customer Name</dt>
-                                    <dd>{{ $sale->customer_name ?? '-' }}</dd>
+                                    <td class="px-6 py-4">{{ $sale->customer->nama ?? '-' }}</td>
                                 </div>
                                 <div>
                                     <dt class="font-medium text-gray-500">Payment Method</dt>
