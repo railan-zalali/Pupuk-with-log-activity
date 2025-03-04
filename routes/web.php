@@ -122,11 +122,15 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware(['permission:manage-sales'])->group(function () {
+        Route::get('sales/credit', [SaleController::class, 'creditSales'])->name('sales.credit');
+
         Route::resource('sales', SaleController::class);
+
         Route::get('/products/{product}/get', [SaleController::class, 'getProduct'])
             ->name('products.get');
         Route::get('sales/{sale}/invoice', [SaleController::class, 'invoice'])
             ->name('sales.invoice');
+        Route::post('/sales/{sale}/pay', [SaleController::class, 'payCredit'])->name('sales.pay');
     });
 
     // Report routes

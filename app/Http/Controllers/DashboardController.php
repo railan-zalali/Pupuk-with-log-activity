@@ -17,6 +17,25 @@ class DashboardController extends Controller
         $data['totalSalesThisMonth'] = Sale::whereMonth('created_at', Carbon::now()->month)->sum('total_amount');
         $data['lowStockProducts'] = Product::whereColumn('stock', '<=', 'min_stock')->count();
 
+        // Data hutang jatuh tempo dalam 1 bulan
+        $data['upcomingCredits'] = Sale::where('payment_method', 'credit')
+            ->where('payment_status', '!=', 'paid')
+            ->where('due_date', '<=', Carbon::now()->addMonth())
+            ->with('customer')
+            ->latest('due_date')
+            ->limit(5)
+            ->get();
+
+        $data['totalUpcomingCredits'] = Sale::where('payment_method', 'credit')
+            ->where('payment_status', '!=', 'paid')
+            ->where('due_date', '<=', Carbon::now()->addMonth())
+            ->count();
+
+        $data['totalCreditAmount'] = Sale::where('payment_method', 'credit')
+            ->where('payment_status', '!=', 'paid')
+            ->where('due_date', '<=', Carbon::now()->addMonth())
+            ->sum('remaining_amount');
+
         // Data untuk tabel
         $data['lowStockAlerts'] = Product::whereColumn('stock', '<=', 'min_stock')
             ->latest()

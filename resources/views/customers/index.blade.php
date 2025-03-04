@@ -6,10 +6,10 @@
             </h2>
             <div class="flex space-x-4 items-center">
                 <a href="{{ route('customers.create') }}"
-                    class="inline-flex items-center rounded-md mr-2 bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                    class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
                     Add New Customer
                 </a>
-                <div class="w-1/3">
+                <div class="w-64 ml-4">
                     <input type="text" id="searchInput" placeholder="Search Customers..."
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         autofocus>
@@ -50,21 +50,21 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
                                         Name</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
-                                        Address</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
+                                        Alamat</th>
+                                    {{-- <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
                                         Village</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
                                         District</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
                                         Regency</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
-                                        Province</th>
+                                        Province</th> --}}
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
-                                        Total Sales</th>
+                                        Total Penjualan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
-                                        Total Amount</th>
+                                        Jumlah Total</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500">
-                                        Actions</th>
+                                        Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -72,14 +72,11 @@
                                     <tr>
                                         <td class="px-6 py-4 text-sm">{{ $customer->nik }}</td>
                                         <td class="px-6 py-4 text-sm">{{ $customer->nama }}</td>
-                                        <td class="px-6 py-4 text-sm ">
-                                            {{ Str::limit($customer->alamat, 10) }}</td>
-                                        <td class="px-6 py-4 text-sm">{{ $customer->desa_nama }}</td>
-                                        <td class="px-6 py-4 text-sm">{{ $customer->kecamatan_nama }}</td>
                                         <td class="px-6 py-4 text-sm">
-                                            {{ Str::limit($customer->kabupaten_nama, 10) }}
-                                        </td>
-                                        <td class="px-6 py-4 text-sm">{{ $customer->provinsi_nama }}
+                                            {{ Str::limit($customer->alamat, 50) }}, {{ $customer->desa_nama }},
+                                            {{ $customer->kecamatan_nama }},
+                                            {{ $customer->kabupaten_nama }},
+                                            {{ $customer->provinsi_nama }}
                                         </td>
                                         <td class="px-6 py-4 text-sm">
                                             <span class="px-2 py-1 rounded-full bg-blue-100 text-blue-800">

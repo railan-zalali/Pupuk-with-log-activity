@@ -1,23 +1,29 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Categories') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                {{ __('Kategori') }}
+            </h2>
+            <div class="flex justify-between items-center">
+                <div>
+                    <a href="{{ route('categories.create') }}"
+                        class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Tambah Kategori
+                    </a>
+                </div>
+                <div class="w-64 ml-4">
+                    <input type="text" id="searchInput" placeholder="Cari kategori..."
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        autofocus>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="mb-4 flex justify-between">
-                        <div>
-                            <a href="{{ route('categories.create') }}"
-                                class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
-                                Add New Category
-                            </a>
-                        </div>
-                    </div>
-
                     @if (session('success'))
                         <div class="mb-4 rounded-md bg-green-50 p-4">
                             <div class="flex">
@@ -62,16 +68,16 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Name</th>
+                                        Nama</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Description</th>
+                                        Deskripsi</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Products Count</th>
+                                        Jumlah Produk</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Actions</th>
+                                        Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
@@ -82,7 +88,7 @@
                                         <td class="px-6 py-4">{{ $category->products_count }}</td>
                                         <td class="whitespace-nowrap px-6 py-4 space-x-2">
                                             <a href="{{ route('categories.show', $category) }}"
-                                                class="text-blue-600 hover:text-blue-900">View</a>
+                                                class="text-blue-600 hover:text-blue-900">Lihat</a>
                                             <a href="{{ route('categories.edit', $category) }}"
                                                 class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                             <form action="{{ route('categories.destroy', $category) }}" method="POST"
@@ -90,8 +96,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900"
-                                                    onclick="return confirm('Are you sure you want to delete this category?')">
-                                                    Delete
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
+                                                    Hapus
                                                 </button>
                                             </form>
                                         </td>
@@ -99,7 +105,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                            No categories found.
+                                            Tidak ada kategori ditemukan.
                                         </td>
                                     </tr>
                                 @endforelse

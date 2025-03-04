@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Reports') }}
+            {{ __('Laporan') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {{-- Sales Report Card --}}
+                {{-- Kartu Laporan Penjualan --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
                     <div class="p-6">
                         <div class="flex items-center">
@@ -21,14 +21,15 @@
                                 </svg>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Sales Report</h3>
-                                <p class="mt-1 text-sm text-gray-500">View detailed sales transactions report</p>
+                                <h3 class="text-lg font-medium text-gray-900">Laporan Penjualan</h3>
+                                <p class="mt-1 text-sm text-gray-500">Lihat laporan transaksi penjualan secara detail
+                                </p>
                             </div>
                         </div>
                         <div class="mt-6">
                             <a href="{{ route('reports.sales') }}"
                                 class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500">
-                                View Report
+                                Lihat Laporan
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7"></path>
@@ -38,7 +39,7 @@
                     </div>
                 </div>
 
-                {{-- Stock Report Card --}}
+                {{-- Kartu Laporan Stok --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
                     <div class="p-6">
                         <div class="flex items-center">
@@ -51,14 +52,14 @@
                                 </svg>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Stock Report</h3>
-                                <p class="mt-1 text-sm text-gray-500">Monitor your inventory status</p>
+                                <h3 class="text-lg font-medium text-gray-900">Laporan Stok</h3>
+                                <p class="mt-1 text-sm text-gray-500">Pantau status inventaris Anda</p>
                             </div>
                         </div>
                         <div class="mt-6">
                             <a href="{{ route('reports.stock') }}"
                                 class="inline-flex items-center text-sm font-medium text-green-600 hover:text-green-500">
-                                View Report
+                                Lihat Laporan
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7"></path>
@@ -68,7 +69,7 @@
                     </div>
                 </div>
 
-                {{-- Profit/Loss Report Card --}}
+                {{-- Kartu Laporan Laba/Rugi --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
                     <div class="p-6">
                         <div class="flex items-center">
@@ -81,14 +82,14 @@
                                 </svg>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Profit/Loss Report</h3>
-                                <p class="mt-1 text-sm text-gray-500">Review financial performance</p>
+                                <h3 class="text-lg font-medium text-gray-900">Laporan Laba/Rugi</h3>
+                                <p class="mt-1 text-sm text-gray-500">Tinjau kinerja keuangan</p>
                             </div>
                         </div>
                         <div class="mt-6">
                             <a href="{{ route('reports.profit-loss') }}"
                                 class="inline-flex items-center text-sm font-medium text-purple-600 hover:text-purple-500">
-                                View Report
+                                Lihat Laporan
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7"></path>

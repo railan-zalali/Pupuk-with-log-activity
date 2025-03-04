@@ -15,9 +15,14 @@ class Sale extends Model
         'customer_id',
         'date',
         'total_amount',
+        'discount',
         'paid_amount',
+        'down_payment',
         'change_amount',
         'payment_method',
+        'payment_status',
+        'remaining_amount',
+        'due_date',
         'notes'
     ];
 

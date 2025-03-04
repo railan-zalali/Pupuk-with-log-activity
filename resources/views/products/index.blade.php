@@ -7,11 +7,11 @@
             <div class="flex justify-between items-center">
                 <div>
                     <a href="{{ route('products.create') }}"
-                        class="inline-flex items-center rounded-md mr-2 bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         Add New Product
                     </a>
                 </div>
-                <div class="w-1/3">
+                <div class="w-64 ml-4">
                     <input type="text" id="searchInput" placeholder="Search products..."
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         autofocus>
@@ -49,22 +49,22 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Code</th>
+                                        Kode</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Name</th>
+                                        Nama</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Category</th>
+                                        Kategori</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Stock</th>
+                                        Stok</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Price</th>
+                                        Harga</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Actions</th>
+                                        Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
@@ -83,7 +83,7 @@
                                             {{ number_format($product->selling_price, 0, ',', '.') }}</td>
                                         <td class="whitespace-nowrap px-6 py-4 space-x-2">
                                             <a href="{{ route('products.show', $product) }}"
-                                                class="text-blue-600 hover:text-blue-900">View</a>
+                                                class="text-blue-600 hover:text-blue-900">Lihat</a>
                                             <a href="{{ route('products.edit', $product) }}"
                                                 class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                             <form action="{{ route('products.destroy', $product) }}" method="POST"
@@ -91,8 +91,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900"
-                                                    onclick="return confirm('Are you sure you want to delete this product?')">
-                                                    Delete
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                                    Hapus
                                                 </button>
                                             </form>
                                         </td>
@@ -100,14 +100,13 @@
                                 @empty
                                     <tr>
                                         <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                            No products found.
+                                            Tidak ada produk ditemukan.
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-
                     <div class="mt-4">
                         {{ $products->links() }}
                     </div>
@@ -131,22 +130,22 @@
                             fetch(`/search/products?query=${encodeURIComponent(searchQuery)}`)
                                 .then(response => {
                                     if (!response.ok) {
-                                        throw new Error('Network response was not ok');
+                                        throw new Error('Respon jaringan tidak ok');
                                     }
                                     return response.json();
                                 })
                                 .then(response => {
                                     const products = response.data;
-                                    tbody.innerHTML = ''; // Clear current table content
+                                    tbody.innerHTML = ''; // Hapus konten tabel saat ini
 
                                     if (products.length === 0) {
                                         tbody.innerHTML = `
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                        No products found.
-                                    </td>
-                                </tr>
-                            `;
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                        Tidak ada produk ditemukan.
+                        </td>
+                    </tr>
+                    `;
                                         return;
                                     }
 
@@ -154,36 +153,36 @@
                                         const stockClass = product.stock <= product
                                             .min_stock ? 'text-red-600 font-bold' : '';
                                         tbody.innerHTML += `
-                                <tr>
-                                    <td class="whitespace-nowrap px-6 py-4">${product.code}</td>
-                                    <td class="px-6 py-4">${product.name}</td>
-                                    <td class="px-6 py-4">${product.category.name}</td>
-                                    <td class="px-6 py-4">
-                                        <span class="${stockClass}">
-                                            ${product.stock}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">Rp ${new Intl.NumberFormat('id-ID').format(product.selling_price)}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 space-x-2">
-                                        <a href="/products/${product.id}" class="text-blue-600 hover:text-blue-900">View</a>
-                                        <a href="/products/${product.id}/edit" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
+                    <tr>
+                        <td class="whitespace-nowrap px-6 py-4">${product.code}</td>
+                        <td class="px-6 py-4">${product.name}</td>
+                        <td class="px-6 py-4">${product.category.name}</td>
+                        <td class="px-6 py-4">
+                        <span class="${stockClass}">
+                            ${product.stock}
+                        </span>
+                        </td>
+                        <td class="px-6 py-4">Rp ${new Intl.NumberFormat('id-ID').format(product.selling_price)}</td>
+                        <td class="whitespace-nowrap px-6 py-4 space-x-2">
+                        <a href="/products/${product.id}" class="text-blue-600 hover:text-blue-900">Lihat</a>
+                        <a href="/products/${product.id}/edit" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
+                            Hapus
+                        </button>
+                        </td>
+                    </tr>
+                    `;
                                     });
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
                                     tbody.innerHTML = `
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-red-500">
-                                    Error loading data. Please try again.
-                                </td>
-                            </tr>
-                        `;
+                    <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-red-500">
+                        Kesalahan memuat data. Silakan coba lagi.
+                    </td>
+                    </tr>
+                `;
                                 });
                         } else if (searchQuery.length === 0) {
                             window.location.reload();

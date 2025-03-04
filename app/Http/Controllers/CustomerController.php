@@ -26,7 +26,7 @@ class CustomerController extends Controller
                     ->orWhere('nik', 'like', "%{$search}%");
             })
             ->latest()
-            ->get();
+            ->paginate(10); // Tambahkan paginate di sini
 
         // Jika request AJAX, kembalikan JSON
         if ($request->ajax() || $request->get('_ajax')) {

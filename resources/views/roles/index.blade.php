@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                {{ __('Roles Management') }}
+                {{ __('Manajemen Role') }}
             </h2>
             <a href="{{ route('roles.create') }}"
                 class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
-                Create New Role
+                Buat Role Baru
             </a>
         </div>
     </x-slot>
@@ -39,16 +39,16 @@
                             <tr>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                    Name</th>
+                                    Nama</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                    Users</th>
+                                    Pengguna</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                    Permissions</th>
+                                    Izin</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                    Actions</th>
+                                    Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
@@ -61,7 +61,7 @@
                                     <td class="px-6 py-4">
                                         <span
                                             class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                                            {{ $role->users_count }} users
+                                            {{ $role->users_count }} pengguna
                                         </span>
                                     </td>
                                     <td class="px-6 py-4">
@@ -83,7 +83,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900"
-                                                    onclick="return confirm('Are you sure you want to delete this role?')">Delete</button>
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus peran ini?')">Hapus</button>
                                             </form>
                                         @endif
                                     </td>

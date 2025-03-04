@@ -7,9 +7,9 @@
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            {{-- Summary Cards --}}
+            {{-- Kartu Ringkasan --}}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {{-- Today's Sales Card --}}
+                {{-- Kartu Penjualan Hari Ini --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow">
                     <div class="p-5">
                         <div class="flex items-center">
@@ -22,7 +22,7 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="truncate text-sm font-medium text-gray-500">Today's Sales</dt>
+                                    <dt class="truncate text-sm font-medium text-gray-500">Penjulaan Harian</dt>
                                     <dd class="text-lg font-medium text-gray-900">Rp
                                         {{ number_format($totalSalesToday, 0, ',', '.') }}</dd>
                                 </dl>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="truncate text-sm font-medium text-gray-500">This Month's Sales</dt>
+                                    <dt class="truncate text-sm font-medium text-gray-500">Penjualan Bulanan</dt>
                                     <dd class="text-lg font-medium text-gray-900">Rp
                                         {{ number_format($totalSalesThisMonth, 0, ',', '.') }}</dd>
                                 </dl>
@@ -66,7 +66,7 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="truncate text-sm font-medium text-gray-500">Total Products</dt>
+                                    <dt class="truncate text-sm font-medium text-gray-500">Total Produk</dt>
                                     <dd class="text-lg font-medium text-gray-900">{{ number_format($totalProducts) }}
                                     </dd>
                                 </dl>
@@ -88,7 +88,7 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="truncate text-sm font-medium text-gray-500">Low Stock Alerts</dt>
+                                    <dt class="truncate text-sm font-medium text-gray-500">Stok Produk Rendah</dt>
                                     <dd class="text-lg font-medium text-gray-900">{{ number_format($lowStockProducts) }}
                                     </dd>
                                 </dl>
@@ -97,19 +97,47 @@
                     </div>
                     @if ($lowStockProducts > 0)
                         <div class="bg-red-50 px-5 py-2">
-                            <a href="{{ route('products.index') }}" class="text-sm text-red-600 hover:text-red-800">View
-                                all alerts →</a>
+                            <a href="{{ route('products.index') }}"
+                                class="text-sm text-red-600 hover:text-red-800">Lihat
+                                semua peringatan →</a>
+                        </div>
+                    @endif
+                </div>
+                {{-- Kartu Kredit --}}
+                <div class="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 p-3 bg-orange-100 rounded-full">
+                                <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="truncate text-sm font-medium text-gray-500">Kredit Bulanan</dt>
+                                    <dd class="text-lg font-medium text-gray-900">Rp
+                                        {{ number_format($totalCreditAmount, 0, ',', '.') }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    @if ($totalUpcomingCredits > 0)
+                        <div class="bg-orange-50 px-5 py-2">
+                            <a href="{{ route('sales.credit') }}"
+                                class="text-sm text-orange-600 hover:text-orange-800">Lihat semua kredit →</a>
                         </div>
                     @endif
                 </div>
             </div>
 
-            {{-- Charts Section --}}
+            {{-- Bagian Grafik --}}
             <div class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {{-- Sales Chart --}}
+                {{-- Grafik Penjualan --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Sales Last 7 Days</h3>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900">Penjualan Mingguan</h3>
                         <div class="mt-2">
                             <div class="h-96">
                                 <canvas id="dailySalesChart"></canvas>
@@ -118,10 +146,10 @@
                     </div>
                 </div>
 
-                {{-- Top Products Chart --}}
+                {{-- Grafik Produk Terlaris --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Top Selling Products</h3>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900">Produk Terlaris</h3>
                         <div class="mt-2">
                             <div class="h-96">
                                 <canvas id="topProductsChart"></canvas>
@@ -131,16 +159,16 @@
                 </div>
             </div>
 
-            {{-- Tables Section --}}
+            {{-- Bagian Tabel --}}
             <div class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {{-- Low Stock Table --}}
+                {{-- Tabel Stok Rendah --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow">
                     <div class="p-6">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">Low Stock Products</h3>
+                            <h3 class="text-lg font-medium leading-6 text-gray-900">Stok Produk Rendah</h3>
                             @if ($lowStockProducts > 0)
                                 <a href="{{ route('products.index') }}"
-                                    class="text-sm text-blue-600 hover:text-blue-900">View all →</a>
+                                    class="text-sm text-blue-600 hover:text-blue-900">Lihat semua →</a>
                             @endif
                         </div>
                         <div class="mt-4">
@@ -150,13 +178,13 @@
                                         <tr>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Product</th>
+                                                Produk</th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Current Stock</th>
+                                                Stok Saat Ini</th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Min Stock</th>
+                                                Stok Minimum</th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 Status</th>
@@ -179,7 +207,7 @@
                                                 <td class="whitespace-nowrap px-6 py-4 text-sm">
                                                     <span
                                                         class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
-                                                        Low Stock
+                                                        Stok Rendah
                                                     </span>
                                                 </td>
                                             </tr>
@@ -187,7 +215,7 @@
                                             <tr>
                                                 <td colspan="4"
                                                     class="px-6 py-4 text-center text-sm text-gray-500">
-                                                    No low stock products found
+                                                    Tidak Ada Stok Produk Rendah
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -198,13 +226,13 @@
                     </div>
                 </div>
 
-                {{-- Recent Transactions Table --}}
+                {{-- Tabel Transaksi Terbaru --}}
                 <div class="overflow-hidden rounded-lg bg-white shadow">
                     <div class="p-6">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">Recent Transactions</h3>
+                            <h3 class="text-lg font-medium leading-6 text-gray-900">Transaksi Terbaru</h3>
                             <a href="{{ route('sales.index') }}"
-                                class="text-sm text-blue-600 hover:text-blue-900">View all →</a>
+                                class="text-sm text-blue-600 hover:text-blue-900">Lihat semua →</a>
                         </div>
                         <div class="mt-4">
                             <div class="overflow-x-auto">
@@ -213,13 +241,13 @@
                                         <tr>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Invoice</th>
+                                                Faktur</th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Date</th>
+                                                Tanggal</th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Amount</th>
+                                                Jumlah</th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 Status</th>
@@ -244,12 +272,12 @@
                                                     @if ($transaction->trashed())
                                                         <span
                                                             class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
-                                                            Void
+                                                            Batal
                                                         </span>
                                                     @else
                                                         <span
                                                             class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                                                            Completed
+                                                            Selesai
                                                         </span>
                                                     @endif
                                                 </td>
@@ -258,12 +286,99 @@
                                             <tr>
                                                 <td colspan="4"
                                                     class="px-6 py-4 text-center text-sm text-gray-500">
-                                                    No transactions found
+                                                    Tidak ada transaksi ditemukan
                                                 </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Upcoming Credits Table --}}
+                <div class="mt-8">
+                    <div class="overflow-hidden rounded-lg bg-white shadow">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900">Kredit Jatuh Tempo Dalam 30
+                                    Hari</h3>
+                                @if ($totalUpcomingCredits > 0)
+                                    <a href="{{ route('sales.credit') }}"
+                                        class="text-sm text-blue-600 hover:text-blue-900">Lihat semua →</a>
+                                @endif
+                            </div>
+                            <div class="mt-4">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                    Faktur</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                    Pelanggan</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                    Tanggal Jatuh Tempo</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                    Jumlah Terhutang</th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                    Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 bg-white">
+                                            @forelse($upcomingCredits as $credit)
+                                                <tr>
+                                                    <td class="whitespace-nowrap px-6 py-4">
+                                                        <a href="{{ route('sales.show', $credit) }}"
+                                                            class="text-blue-600 hover:text-blue-900">
+                                                            {{ $credit->invoice_number }}
+                                                        </a>
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                        {{ $credit->customer->nama ?? 'Pelanggan Tidak Diketahui' }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                        {{ \Carbon\Carbon::parse($credit->due_date)->format('d/m/Y') }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                                                        Rp {{ number_format($credit->remaining_amount, 0, ',', '.') }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4 text-sm">
+                                                        @if (\Carbon\Carbon::parse($credit->due_date)->isPast())
+                                                            <span
+                                                                class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+                                                                Terlambat
+                                                            </span>
+                                                        @elseif(\Carbon\Carbon::parse($credit->due_date)->diffInDays(now()) <= 7)
+                                                            <span
+                                                                class="inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
+                                                                Segera Jatuh Tempo
+                                                            </span>
+                                                        @else
+                                                            <span
+                                                                class="inline-flex rounded-full bg-orange-100 px-2 text-xs font-semibold leading-5 text-orange-800">
+                                                                Akan Datang
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="5"
+                                                        class="px-6 py-4 text-center text-sm text-gray-500">
+                                                        Tidak ada kredit yang akan datang ditemukan
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -286,7 +401,7 @@
                     data: {
                         labels: @json($dailySales->pluck('date')->map(fn($date) => \Carbon\Carbon::parse($date)->format('d/m'))),
                         datasets: [{
-                            label: 'Daily Sales',
+                            label: 'Penjualan Harian',
                             data: @json($dailySales->pluck('total')),
                             borderColor: 'rgb(59, 130, 246)',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -328,7 +443,7 @@
                     data: {
                         labels: @json($topProducts->pluck('name')),
                         datasets: [{
-                            label: 'Units Sold',
+                            label: 'Unit Terjual',
                             data: @json($topProducts->pluck('total_sold')), // Changed from sale_details_sum_quantity
                             backgroundColor: [
                                 'rgba(59, 130, 246, 0.8)',

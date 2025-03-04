@@ -17,10 +17,10 @@
                     </x-nav-link>
 
                     <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
-                        {{ __('Products') }}
+                        {{ __('Produk') }}
                     </x-nav-link>
                     <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.*')">
-                        {{ __('Customers') }}
+                        {{ __('Pelanggan') }}
                     </x-nav-link>
 
                     {{-- <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
@@ -32,7 +32,7 @@
                     </x-nav-link> --}}
                     @if (auth()->user()->hasRole('admin'))
                         <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
-                            {{ __('Suppliers') }}
+                            {{ __('Supplier') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('purchases.index')" :active="request()->routeIs('purchases.*')">
@@ -40,15 +40,15 @@
                         </x-nav-link>
 
                         <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
-                            {{ __('Categories') }}
+                            {{ __('Kategori') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                            {{ __('Users') }}
+                            {{ __('Pengguna') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
-                            {{ __('Roles') }}
+                            {{ __('Role') }}
                         </x-nav-link>
                     @endif
 
@@ -129,15 +129,15 @@
             </x-responsive-nav-link> --}}
 
             <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
-                {{ __('Products') }}
+                {{ __('Produk') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
-                {{ __('Suppliers') }}
+                {{ __('Supplier') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.*')">
-                {{ __('Customers') }}
+                {{ __('Pelanggan') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('purchases.index')" :active="request()->routeIs('purchases.*')">
@@ -149,26 +149,26 @@
 
             @if (auth()->user()->hasRole('admin'))
                 <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
-                    {{ __('Categories') }}
+                    {{ __('Kategori') }}
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                    {{ __('Users') }}
+                    {{ __('Pengguna') }}
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
-                    {{ __('Roles') }}
+                    {{ __('Role') }}
                 </x-responsive-nav-link>
             @endif
 
 
             {{-- @endrole --}}
             <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')">
-                {{ __('Sales') }}
+                {{ __('Penjualan') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
-                {{ __('Reports') }}
+                {{ __('Laporan') }}
             </x-responsive-nav-link>
         </div>
 

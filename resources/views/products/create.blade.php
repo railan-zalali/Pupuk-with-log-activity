@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Add New Product') }}
+            {{ __('Tambah Produk Baru') }}
         </h2>
     </x-slot>
 
@@ -18,7 +18,7 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-red-800">There were errors with your submission</h3>
+                            <h3 class="text-sm font-medium text-red-800">Ada kesalahan dalam pengiriman Anda</h3>
                             <div class="mt-2 text-sm text-red-700">
                                 <ul class="list-disc pl-5 space-y-1">
                                     @foreach ($errors->all() as $error)
@@ -38,11 +38,11 @@
 
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                             <div>
-                                <x-input-label for="category_id" value="Category" />
+                                <x-input-label for="category_id" value="Kategori" />
                                 <select id="category_id" name="category_id"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     required>
-                                    <option value="">Select Category</option>
+                                    <option value="">Pilih Kategori</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
                                             {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -54,49 +54,49 @@
                             </div>
 
                             <div>
-                                <x-input-label for="code" value="Product Code" />
+                                <x-input-label for="code" value="Kode Produk" />
                                 <x-text-input id="code" name="code" type="text"
                                     class="mt-1 block w-full bg-gray-100" :value="$productCode" readonly />
                                 <x-input-error :messages="$errors->get('code')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="name" value="Product Name" />
+                                <x-input-label for="name" value="Nama Produk" />
                                 <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
                                     :value="old('name')" required />
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="description" value="Description" />
+                                <x-input-label for="description" value="Deskripsi" />
                                 <textarea id="description" name="description"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description') }}</textarea>
                                 <x-input-error :messages="$errors->get('description')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="purchase_price" value="Purchase Price" />
+                                <x-input-label for="purchase_price" value="Harga Beli" />
                                 <x-text-input id="purchase_price" name="purchase_price" type="number"
                                     class="mt-1 block w-full" :value="old('purchase_price')" required />
                                 <x-input-error :messages="$errors->get('purchase_price')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="selling_price" value="Selling Price" />
+                                <x-input-label for="selling_price" value="Harga Jual" />
                                 <x-text-input id="selling_price" name="selling_price" type="number"
                                     class="mt-1 block w-full" :value="old('selling_price')" required />
                                 <x-input-error :messages="$errors->get('selling_price')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="stock" value="Initial Stock" />
+                                <x-input-label for="stock" value="Stok Awal" />
                                 <x-text-input id="stock" name="stock" type="number" class="mt-1 block w-full"
                                     :value="old('stock', 0)" required />
                                 <x-input-error :messages="$errors->get('stock')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="min_stock" value="Minimum Stock" />
+                                <x-input-label for="min_stock" value="Stok Minimum" />
                                 <x-text-input id="min_stock" name="min_stock" type="number" class="mt-1 block w-full"
                                     :value="old('min_stock', 0)" required />
                                 <x-input-error :messages="$errors->get('min_stock')" class="mt-2" />
@@ -105,10 +105,10 @@
 
                         <div class="mt-6 flex justify-end space-x-3">
                             <x-secondary-button type="button" onclick="window.history.back()">
-                                Cancel
+                                Batal
                             </x-secondary-button>
                             <x-primary-button>
-                                Create Product
+                                Buat Produk
                             </x-primary-button>
                         </div>
                     </form>
