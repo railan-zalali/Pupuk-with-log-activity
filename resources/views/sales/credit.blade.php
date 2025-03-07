@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Credit Sales Management') }}
+            {{ __('Manajemen Penjualan Kredit') }}
         </h2>
     </x-slot>
 
@@ -10,7 +10,7 @@
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="mb-4 flex justify-between">
-                        <h3 class="text-lg font-medium">Outstanding Credits</h3>
+                        <h3 class="text-lg font-medium">Kredit Belum Lunas</h3>
                     </div>
 
                     @if (session('success'))
@@ -38,75 +38,77 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Invoice</th>
+                                        Faktur</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Customer</th>
+                                        Pelanggan</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Total Amount</th>
+                                        Jumlah Total</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Paid Amount</th>
+                                        Jumlah Dibayar</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Remaining</th>
+                                        Sisa</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Due Date</th>
+                                        Tanggal Jatuh Tempo</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                        Actions</th>
+                                        Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
                                 @forelse ($creditSales as $sale)
                                     <tr>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td class="whitespace-nowrap px-6 py-4 text-xs">
                                             <a href="{{ route('sales.show', $sale) }}"
                                                 class="text-blue-600 hover:text-blue-900">
                                                 {{ $sale->invoice_number }}
                                             </a>
-                                            <div class="text-sm text-gray-500">
+                                            <div class="text-gray-500 text-xs">
                                                 {{ \Carbon\Carbon::parse($sale->date)->format('d/m/Y') }}
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">{{ $sale->customer->nama ?? '-' }}</td>
-                                        <td class="px-6 py-4">Rp {{ number_format($sale->total_amount, 0, ',', '.') }}
+                                        <td class="px-6 py-4 text-xs">{{ $sale->customer->nama ?? '-' }}</td>
+                                        <td class="px-6 py-4 text-xs">Rp
+                                            {{ number_format($sale->total_amount, 0, ',', '.') }}
                                         </td>
-                                        <td class="px-6 py-4">Rp {{ number_format($sale->paid_amount, 0, ',', '.') }}
+                                        <td class="px-6 py-4 text-xs">Rp
+                                            {{ number_format($sale->paid_amount, 0, ',', '.') }}
                                         </td>
                                         <td
-                                            class="px-6 py-4 font-medium {{ \Carbon\Carbon::parse($sale->due_date)->isPast() ? 'text-red-600' : 'text-orange-600' }}">
+                                            class="px-6 py-4 text-xs font-medium {{ \Carbon\Carbon::parse($sale->due_date)->isPast() ? 'text-red-600' : 'text-orange-600' }}">
                                             Rp {{ number_format($sale->remaining_amount, 0, ',', '.') }}
                                         </td>
-                                        <td class="px-6 py-4 text-sm">
+                                        <td class="px-6 py-4 text-xs">
                                             <span
-                                                class="{{ \Carbon\Carbon::parse($sale->due_date)->isPast() ? 'text-red-600' : '' }}">
+                                                class="{{ \Carbon\Carbon::parse($sale->due_date)->isPast() ? 'text-red-600 text-xs' : '' }}">
                                                 {{ \Carbon\Carbon::parse($sale->due_date)->format('d/m/Y') }}
                                             </span>
                                             @if (\Carbon\Carbon::parse($sale->due_date)->isPast())
                                                 <span
                                                     class="ml-2 inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
-                                                    Overdue
+                                                    Terlambat
                                                 </span>
                                             @elseif(\Carbon\Carbon::parse($sale->due_date)->diffInDays(now()) <= 7)
                                                 <span
                                                     class="ml-2 inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
-                                                    Due Soon
+                                                    Segera Jatuh Tempo
                                                 </span>
                                             @endif
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4">
                                             <button
                                                 onclick="openPaymentModal('{{ $sale->id }}', '{{ $sale->invoice_number }}', {{ $sale->remaining_amount }})"
-                                                class="text-green-600 hover:text-green-900">Record Payment</button>
+                                                class="text-green-600 hover:text-green-900">Catat Pembayaran</button>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="8" class="px-6 py-4 text-center text-gray-500">
-                                            No outstanding credits found.
+                                            Tidak ada kredit yang belum lunas.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -144,13 +146,14 @@
                             </div>
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                    Record Payment
+                                    Catat Pembayaran
                                 </h3>
                                 <div class="mt-2">
-                                    <p class="text-sm text-gray-500" id="invoiceInfo">Recording payment for invoice </p>
+                                    <p class="text-sm text-gray-500" id="invoiceInfo">Mencatat pembayaran untuk faktur
+                                    </p>
                                     <div class="mt-4">
-                                        <label for="amount" class="block text-sm font-medium text-gray-700">Payment
-                                            Amount</label>
+                                        <label for="amount" class="block text-sm font-medium text-gray-700">Jumlah
+                                            Pembayaran</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
                                             <div
                                                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -160,7 +163,7 @@
                                                 class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-12 sm:text-sm border-gray-300 rounded-md"
                                                 placeholder="0.00" required>
                                         </div>
-                                        <p class="mt-2 text-sm text-gray-500">Remaining amount: <span
+                                        <p class="mt-2 text-sm text-gray-500">Jumlah sisa: <span
                                                 id="remainingAmount"></span></p>
                                     </div>
                                 </div>
@@ -170,11 +173,11 @@
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <button type="submit"
                             class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Record Payment
+                            Catat Pembayaran
                         </button>
                         <button type="button" onclick="closePaymentModal()"
                             class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                            Cancel
+                            Batal
                         </button>
                     </div>
                 </form>

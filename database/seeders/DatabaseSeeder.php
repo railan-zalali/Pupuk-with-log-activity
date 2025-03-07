@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Category::factory(5)->create();
+        Category::factory(3)->create();
         Customer::factory(10)->create();
         Product::factory(20)->create();
-        Supplier::factory(5)->create();
+        Supplier::factory(3)->create();
 
         // Memanggil RolePermissionSeeder
         $this->call([

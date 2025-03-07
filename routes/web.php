@@ -99,7 +99,12 @@ Route::middleware('auth')->group(function () {
     // Resource routes dengan permission
     Route::middleware(['permission:manage-products'])->group(function () {
         Route::resource('categories', CategoryController::class);
+
+        Route::post('/products/{product}/remove-image', [ProductController::class, 'deleteImage'])
+            ->name('products.deleteImage');
+
         Route::resource('products', ProductController::class);
+
         Route::post('/products/{product}/update-stock', [ProductController::class, 'updateStock'])
             ->name('products.updateStock');
     });

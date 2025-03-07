@@ -1,8 +1,21 @@
 <x-app-layout>
+    <!-- Header yang diperbarui untuk sales.create.blade.php -->
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Buat Penjualan Baru') }}
-        </h2>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h2 class="text-2xl font-semibold leading-tight text-gray-800">
+                    <span class="inline-flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        {{ __('Buat Penjualan Baru') }}
+                    </span>
+                </h2>
+                <p class="mt-1 text-sm text-gray-600">Kelola semua transaksi penjualan Anda dalam satu tempat</p>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -40,53 +53,82 @@
                     <form action="{{ route('sales.store') }}" method="POST" id="saleForm">
                         @csrf
 
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
-                            <div>
-                                <x-input-label for="invoice_number" value="Nomor Faktur" />
-                                <x-text-input id="invoice_number" name="invoice_number" type="text"
-                                    class="mt-1 block w-full bg-gray-100" :value="$invoiceNumber" readonly />
-                            </div>
+                        <!-- Section: Informasi Penjualan -->
+                        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+                            <h3
+                                class="text-lg font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Informasi Penjualan
+                            </h3>
 
-                            <div>
-                                <x-input-label for="date" value="Tanggal" />
-                                <x-text-input id="date" name="date" type="date" class="mt-1 block w-full"
-                                    :value="old('date', date('Y-m-d'))" required />
-                                <x-input-error :messages="$errors->get('date')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <x-input-label for="customer_select" value="Nama Pelanggan" />
-                                <select id="customer_select" name="customer_id"
-                                    class="select2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="">-- Pilih Pelanggan atau Ketik Nama Baru --</option>
-                                    @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}">{{ $customer->nama }} - {{ $customer->nik }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <input type="hidden" name="customer_name" id="new_customer_name">
-                                <div class="mt-1 text-xs text-gray-500">Pilih pelanggan yang ada atau ketik nama baru
+                            <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
+                                <div>
+                                    <x-input-label for="invoice_number" value="Nomor Faktur" />
+                                    <x-text-input id="invoice_number" name="invoice_number" type="text"
+                                        class="mt-1 block w-full bg-gray-100" :value="$invoiceNumber" readonly />
                                 </div>
-                            </div>
 
-                            <div>
-                                <x-input-label for="payment_method" value="Metode Pembayaran" />
-                                <select id="payment_method" name="payment_method"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    required>
-                                    <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>
-                                        Tunai
-                                    </option>
-                                    <option value="transfer"
-                                        {{ old('payment_method') === 'transfer' ? 'selected' : '' }}>Transfer</option>
-                                    <option value="credit" {{ old('payment_method') === 'credit' ? 'selected' : '' }}>
-                                        Hutang</option>
-                                </select>
-                                <x-input-error :messages="$errors->get('payment_method')" class="mt-2" />
+                                <div>
+                                    <x-input-label for="date" value="Tanggal" />
+                                    <x-text-input id="date" name="date" type="date" class="mt-1 block w-full"
+                                        :value="old('date', date('Y-m-d'))" required />
+                                    <x-input-error :messages="$errors->get('date')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="customer_select" value="Nama Pelanggan" />
+                                    <select id="customer_select" name="customer_id"
+                                        class="select2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <option value="">-- Pilih Pelanggan atau Ketik Nama Baru --</option>
+                                        @foreach ($customers as $customer)
+                                            <option value="{{ $customer->id }}">{{ $customer->nama }} -
+                                                {{ $customer->nik }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" name="customer_name" id="new_customer_name">
+                                    <div class="mt-1 text-xs text-gray-500">Pilih pelanggan yang ada atau ketik nama
+                                        baru</div>
+                                </div>
+
+                                <div>
+                                    <x-input-label for="payment_method" value="Metode Pembayaran" />
+                                    <select id="payment_method" name="payment_method"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        required>
+                                        <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>
+                                            Tunai
+                                        </option>
+                                        <option value="transfer"
+                                            {{ old('payment_method') === 'transfer' ? 'selected' : '' }}>
+                                            Transfer
+                                        </option>
+                                        <option value="credit"
+                                            {{ old('payment_method') === 'credit' ? 'selected' : '' }}>
+                                            Hutang
+                                        </option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('payment_method')" class="mt-2" />
+                                </div>
                             </div>
                         </div>
 
-                        <div class="mt-6">
+                        <!-- Section: Item Penjualan -->
+                        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100 mt-6">
+                            <h3
+                                class="text-lg font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Item Penjualan
+                            </h3>
+
                             <div class="flex justify-between items-center">
                                 <h3 class="text-lg font-medium text-gray-900">Item Penjualan</h3>
                                 <button type="button" onclick="addItem()"
@@ -128,24 +170,40 @@
                                             <td></td>
                                         </tr>
                                         <tr id="dp_container" style="display: none;">
-                                            <td colspan="4" class="px-6 py-4 text-right font-medium">Uang Muka (DP):
-                                            </td>
+                                            <td colspan="4" class="px-6 py-4 text-right font-medium">Uang Muka
+                                                (DP):</td>
                                             <td class="px-6 py-4">
-                                                <input type="number" name="down_payment" id="down_payment"
-                                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                    value="0" min="0" onchange="calculateRemainingAmount()">
+                                                <div class="flex space-x-2">
+                                                    <input type="number" name="down_payment" id="down_payment"
+                                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                        value="0" min="0"
+                                                        onchange="calculateRemainingAmount()">
+                                                    <button type="button" onclick="setDownPayment(50)"
+                                                        class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
+                                                        50%
+                                                    </button>
+                                                    <button type="button" onclick="setDownPayment(75)"
+                                                        class="inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500">
+                                                        75%
+                                                    </button>
+                                                </div>
                                             </td>
                                             <td></td>
                                         </tr>
                                         <tr id="paid_amount_container">
                                             <td colspan="4" class="px-6 py-4 text-right font-medium">Jumlah Yang
-                                                Dibayar:
-                                            </td>
+                                                Dibayar:</td>
                                             <td class="px-6 py-4">
-                                                <input type="number" name="paid_amount" id="paid_amount"
-                                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                    value="0" min="0" onchange="calculateChange()"
-                                                    required>
+                                                <div class="flex space-x-2">
+                                                    <input type="number" name="paid_amount" id="paid_amount"
+                                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                        value="0" min="0" onchange="calculateChange()"
+                                                        required>
+                                                    <button type="button" onclick="setExactAmount()"
+                                                        class="inline-flex items-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500">
+                                                        Uang Pas
+                                                    </button>
+                                                </div>
                                             </td>
                                             <td></td>
                                         </tr>
@@ -180,25 +238,42 @@
                             </div>
                         </div>
 
-                        <div class="mt-6">
-                            <x-input-label for="notes" value="Catatan" />
-                            <textarea id="notes" name="notes" rows="3"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('notes') }}</textarea>
+                        <!-- Section: Catatan -->
+                        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100 mt-6">
+                            <h3
+                                class="text-lg font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Catatan
+                            </h3>
+
+                            <div>
+                                <x-input-label for="notes" value="Catatan" />
+                                <textarea id="notes" name="notes" rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('notes') }}</textarea>
+                            </div>
                         </div>
 
+                        <!-- Form Actions -->
                         <div class="mt-6 flex justify-end space-x-3">
-                            <x-secondary-button type="button" onclick="window.history.back()">
+                            <button type="button" onclick="window.history.back()"
+                                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
                                 Batal
-                            </x-secondary-button>
-                            <x-primary-button>
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
                                 Proses Transaksi
-                            </x-primary-button>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -293,6 +368,13 @@
                 }
             }
 
+            function setExactAmount() {
+                const finalText = document.getElementById('finalAmount').textContent;
+                const finalTotal = parseFloat(finalText.replace('Rp ', '').replace(/\./g, '')) || 0;
+                document.getElementById('paid_amount').value = finalTotal;
+                calculateChange();
+            }
+
             function calculateChange() {
                 const totalText = document.getElementById('totalAmount').textContent;
                 const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
@@ -333,6 +415,14 @@
                     document.getElementById('down_payment').value = total;
                     calculateRemainingAmount();
                 }
+            }
+
+            function setDownPayment(percentage) {
+                const finalText = document.getElementById('finalAmount').textContent;
+                const finalTotal = parseFloat(finalText.replace('Rp ', '').replace(/\./g, '')) || 0;
+                const downPaymentAmount = Math.round(finalTotal * percentage / 100);
+                document.getElementById('down_payment').value = downPaymentAmount;
+                calculateRemainingAmount();
             }
 
             function formatRupiah(number) {

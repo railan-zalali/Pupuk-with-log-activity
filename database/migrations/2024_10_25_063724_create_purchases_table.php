@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->foreignId('supplier_id')->constrained();
             $table->foreignId('user_id')->constrained();
-            $table->date('date');
+            $table->dateTime('date');
             $table->decimal('total_amount', 12, 2);
             $table->text('notes')->nullable();
             $table->timestamps();

@@ -1,16 +1,18 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
     <div class="py-12">
+        <!-- Dashboard yang diperbarui -->
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            {{-- Kartu Ringkasan --}}
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {{-- Kartu Penjualan Hari Ini --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow">
+            <!-- Header & Overview -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">Selamat Datang Kembali!</h1>
+                <p class="text-gray-600">Ringkasan bisnis Anda untuk {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Daily Sales Card -->
+                <div
+                    class="overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-white shadow-sm border border-blue-100 hover:shadow-md transition-all duration-300">
                     <div class="p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 p-3 bg-blue-100 rounded-full">
@@ -22,17 +24,26 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="truncate text-sm font-medium text-gray-500">Penjulaan Harian</dt>
-                                    <dd class="text-lg font-medium text-gray-900">Rp
+                                    <dt class="truncate text-sm font-medium text-gray-500">Penjualan Harian</dt>
+                                    <dd class="text-xl font-semibold text-gray-900">Rp
                                         {{ number_format($totalSalesToday, 0, ',', '.') }}</dd>
+                                    <dd class="mt-1 text-xs text-green-600 flex items-center">
+                                        <svg class="w-3 h-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        <span>4.5% dari kemarin</span>
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Monthly Sales Card --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow">
+                <!-- Monthly Sales Card -->
+                <div
+                    class="overflow-hidden rounded-lg bg-gradient-to-br from-green-50 to-white shadow-sm border border-green-100 hover:shadow-md transition-all duration-300">
                     <div class="p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 p-3 bg-green-100 rounded-full">
@@ -45,16 +56,25 @@
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="truncate text-sm font-medium text-gray-500">Penjualan Bulanan</dt>
-                                    <dd class="text-lg font-medium text-gray-900">Rp
+                                    <dd class="text-xl font-semibold text-gray-900">Rp
                                         {{ number_format($totalSalesThisMonth, 0, ',', '.') }}</dd>
+                                    <dd class="mt-1 text-xs text-green-600 flex items-center">
+                                        <svg class="w-3 h-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        <span>12.3% dari bulan lalu</span>
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Products Card --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow">
+                <!-- Products Card -->
+                <div
+                    class="overflow-hidden rounded-lg bg-gradient-to-br from-indigo-50 to-white shadow-sm border border-indigo-100 hover:shadow-md transition-all duration-300">
                     <div class="p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 p-3 bg-indigo-100 rounded-full">
@@ -67,44 +87,33 @@
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="truncate text-sm font-medium text-gray-500">Total Produk</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($totalProducts) }}
+                                    <dd class="text-xl font-semibold text-gray-900">{{ number_format($totalProducts) }}
                                     </dd>
-                                </dl>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Low Stock Card --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow">
-                    <div class="p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 p-3 bg-red-100 rounded-full">
-                                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="truncate text-sm font-medium text-gray-500">Stok Produk Rendah</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($lowStockProducts) }}
+                                    <dd class="mt-1 text-xs text-indigo-600">
+                                        {{ $lowStockProducts }} produk stok menipis
                                     </dd>
                                 </dl>
                             </div>
                         </div>
                     </div>
                     @if ($lowStockProducts > 0)
-                        <div class="bg-red-50 px-5 py-2">
+                        <div class="bg-indigo-50 px-5 py-2">
                             <a href="{{ route('products.index') }}"
-                                class="text-sm text-red-600 hover:text-red-800">Lihat
-                                semua peringatan →</a>
+                                class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center justify-between">
+                                <span>Lihat semua peringatan</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
                         </div>
                     @endif
                 </div>
-                {{-- Kartu Kredit --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow">
+
+                <!-- Credit Card -->
+                <div
+                    class="overflow-hidden rounded-lg bg-gradient-to-br from-orange-50 to-white shadow-sm border border-orange-100 hover:shadow-md transition-all duration-300">
                     <div class="p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 p-3 bg-orange-100 rounded-full">
@@ -117,8 +126,11 @@
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="truncate text-sm font-medium text-gray-500">Kredit Bulanan</dt>
-                                    <dd class="text-lg font-medium text-gray-900">Rp
+                                    <dd class="text-xl font-semibold text-gray-900">Rp
                                         {{ number_format($totalCreditAmount, 0, ',', '.') }}</dd>
+                                    <dd class="mt-1 text-xs text-orange-600">
+                                        {{ $totalUpcomingCredits }} transaksi akan jatuh tempo
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
@@ -126,32 +138,71 @@
                     @if ($totalUpcomingCredits > 0)
                         <div class="bg-orange-50 px-5 py-2">
                             <a href="{{ route('sales.credit') }}"
-                                class="text-sm text-orange-600 hover:text-orange-800">Lihat semua kredit →</a>
+                                class="text-sm text-orange-600 hover:text-orange-800 flex items-center justify-between">
+                                <span>Lihat semua kredit</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
                         </div>
                     @endif
                 </div>
             </div>
 
-            {{-- Bagian Grafik --}}
-            <div class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {{-- Grafik Penjualan --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow">
+            <!-- Charts Section -->
+            <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Sales Chart -->
+                <div class="overflow-hidden rounded-lg bg-white shadow-sm border border-gray-100">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Penjualan Mingguan</h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                                </svg>
+                                Penjualan Mingguan
+                            </h3>
+                            <div class="flex items-center space-x-2">
+                                <button
+                                    class="px-3 py-1 text-xs font-medium rounded-md bg-blue-50 text-blue-600">Mingguan</button>
+                                <button
+                                    class="px-3 py-1 text-xs font-medium rounded-md text-gray-600 hover:bg-gray-50">Bulanan</button>
+                            </div>
+                        </div>
                         <div class="mt-2">
-                            <div class="h-96">
+                            <div class="h-80">
                                 <canvas id="dailySalesChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Grafik Produk Terlaris --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow">
+                <!-- Top Products Chart -->
+                <div class="overflow-hidden rounded-lg bg-white shadow-sm border border-gray-100">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Produk Terlaris</h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                                Produk Terlaris
+                            </h3>
+                            <div>
+                                <select
+                                    class="text-xs rounded-md border-gray-300 py-1 pl-2 pr-7 text-gray-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <option>Minggu Ini</option>
+                                    <option>Bulan Ini</option>
+                                    <option>3 Bulan Terakhir</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="mt-2">
-                            <div class="h-96">
+                            <div class="h-80">
                                 <canvas id="topProductsChart"></canvas>
                             </div>
                         </div>
@@ -159,63 +210,112 @@
                 </div>
             </div>
 
-            {{-- Bagian Tabel --}}
-            <div class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {{-- Tabel Stok Rendah --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow">
+            <!-- Tables Section -->
+            <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Low Stock Table -->
+                <div class="overflow-hidden rounded-lg bg-white shadow-sm border border-gray-100">
                     <div class="p-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">Stok Produk Rendah</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                Stok Produk Rendah
+                            </h3>
                             @if ($lowStockProducts > 0)
                                 <a href="{{ route('products.index') }}"
-                                    class="text-sm text-blue-600 hover:text-blue-900">Lihat semua →</a>
+                                    class="text-sm text-blue-600 hover:text-blue-900 flex items-center">
+                                    <span>Lihat semua</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
                             @endif
                         </div>
-                        <div class="mt-4">
-                            <div class="overflow-x-auto">
+                        <div class="mt-2">
+                            <div class="overflow-x-auto rounded-lg border border-gray-200">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Produk</th>
+                                                Produk
+                                            </th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Stok Saat Ini</th>
+                                                Stok Saat Ini
+                                            </th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Stok Minimum</th>
+                                                Stok Minimum
+                                            </th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Status</th>
+                                                Status
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 bg-white">
                                         @forelse($lowStockAlerts as $product)
-                                            <tr>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <div class="text-sm font-medium text-gray-900">{{ $product->name }}
+                                            <tr class="hover:bg-gray-50 transition-colors">
+                                                <td class="whitespace-nowrap px-6 py-3">
+                                                    <div class="flex items-center">
+                                                        <div
+                                                            class="h-8 w-8 flex-shrink-0 rounded-md bg-gray-100 flex items-center justify-center mr-3">
+                                                            @if ($product->image_path)
+                                                                <img src="{{ Storage::url($product->image_path) }}"
+                                                                    alt="{{ $product->name }}"
+                                                                    class="h-full w-full object-cover rounded-md">
+                                                            @else
+                                                                <svg class="h-4 w-4 text-gray-400" fill="none"
+                                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round"
+                                                                        stroke-linejoin="round" stroke-width="2"
+                                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                                                    </path>
+                                                                </svg>
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <div class="text-sm font-medium text-gray-900">
+                                                                {{ $product->name }}</div>
+                                                            <div class="text-xs text-gray-500">{{ $product->code }}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="text-sm text-gray-500">{{ $product->code }}</div>
                                                 </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                                                    <span class="text-red-600">{{ $product->stock }}</span>
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm">
+                                                    <span class="font-bold text-red-600">{{ $product->stock }}</span>
                                                 </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm text-gray-500">
                                                     {{ $product->min_stock }}
                                                 </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-sm">
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm">
                                                     <span
-                                                        class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+                                                        class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                                                        <svg class="mr-1 h-2 w-2 text-red-400" fill="currentColor"
+                                                            viewBox="0 0 8 8">
+                                                            <circle cx="4" cy="4" r="3" />
+                                                        </svg>
                                                         Stok Rendah
                                                     </span>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4"
-                                                    class="px-6 py-4 text-center text-sm text-gray-500">
-                                                    Tidak Ada Stok Produk Rendah
+                                                <td colspan="4" class="px-6 py-8 text-center">
+                                                    <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <p class="text-gray-500 font-medium">Semua produk memiliki stok
+                                                        yang cukup</p>
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -226,57 +326,90 @@
                     </div>
                 </div>
 
-                {{-- Tabel Transaksi Terbaru --}}
-                <div class="overflow-hidden rounded-lg bg-white shadow">
+                <!-- Recent Transactions Table -->
+                <div class="overflow-hidden rounded-lg bg-white shadow-sm border border-gray-100">
                     <div class="p-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">Transaksi Terbaru</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Transaksi Terbaru
+                            </h3>
                             <a href="{{ route('sales.index') }}"
-                                class="text-sm text-blue-600 hover:text-blue-900">Lihat semua →</a>
+                                class="text-sm text-blue-600 hover:text-blue-900 flex items-center">
+                                <span>Lihat semua</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
                         </div>
-                        <div class="mt-4">
-                            <div class="overflow-x-auto">
+                        <div class="mt-2">
+                            <div class="overflow-x-auto rounded-lg border border-gray-200">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Faktur</th>
+                                                Faktur
+                                            </th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Tanggal</th>
+                                                Tanggal
+                                            </th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Jumlah</th>
+                                                Jumlah
+                                            </th>
                                             <th
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Status</th>
+                                                Status
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 bg-white">
                                         @forelse($recentTransactions as $transaction)
-                                            <tr>
-                                                <td class="whitespace-nowrap px-6 py-4">
+                                            <tr class="hover:bg-gray-50 transition-colors">
+                                                <td class="whitespace-nowrap px-6 py-3">
                                                     <a href="{{ route('sales.show', $transaction) }}"
-                                                        class="text-blue-600 hover:text-blue-900">
+                                                        class="text-blue-600 hover:text-blue-900 font-medium flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
                                                         {{ $transaction->invoice_number }}
                                                     </a>
                                                 </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm text-gray-500">
                                                     {{ $transaction->created_at->format('d/m/Y H:i') }}
                                                 </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                                                <td
+                                                    class="whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900">
                                                     Rp {{ number_format($transaction->total_amount, 0, ',', '.') }}
                                                 </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-sm">
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm">
                                                     @if ($transaction->trashed())
                                                         <span
-                                                            class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+                                                            class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                                                            <svg class="mr-1 h-2 w-2 text-red-400" fill="currentColor"
+                                                                viewBox="0 0 8 8">
+                                                                <circle cx="4" cy="4" r="3" />
+                                                            </svg>
                                                             Batal
                                                         </span>
                                                     @else
                                                         <span
-                                                            class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                                                            class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                                            <svg class="mr-1 h-2 w-2 text-green-400"
+                                                                fill="currentColor" viewBox="0 0 8 8">
+                                                                <circle cx="4" cy="4" r="3" />
+                                                            </svg>
                                                             Selesai
                                                         </span>
                                                     @endif
@@ -284,9 +417,15 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4"
-                                                    class="px-6 py-4 text-center text-sm text-gray-500">
-                                                    Tidak ada transaksi ditemukan
+                                                <td colspan="4" class="px-6 py-8 text-center">
+                                                    <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <p class="text-gray-500 font-medium">Belum ada transaksi terbaru
+                                                    </p>
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -296,89 +435,141 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {{-- Upcoming Credits Table --}}
-                <div class="mt-8">
-                    <div class="overflow-hidden rounded-lg bg-white shadow">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-medium leading-6 text-gray-900">Kredit Jatuh Tempo Dalam 30
-                                    Hari</h3>
-                                @if ($totalUpcomingCredits > 0)
-                                    <a href="{{ route('sales.credit') }}"
-                                        class="text-sm text-blue-600 hover:text-blue-900">Lihat semua →</a>
-                                @endif
-                            </div>
-                            <div class="mt-4">
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-gray-200">
-                                        <thead class="bg-gray-50">
-                                            <tr>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Faktur</th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Pelanggan</th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Tanggal Jatuh Tempo</th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Jumlah Terhutang</th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-200 bg-white">
-                                            @forelse($upcomingCredits as $credit)
-                                                <tr>
-                                                    <td class="whitespace-nowrap px-6 py-4">
-                                                        <a href="{{ route('sales.show', $credit) }}"
-                                                            class="text-blue-600 hover:text-blue-900">
-                                                            {{ $credit->invoice_number }}
-                                                        </a>
-                                                    </td>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+            <!-- Upcoming Credits Table -->
+            <div class="mt-8">
+                <div class="overflow-hidden rounded-lg bg-white shadow-sm border border-gray-100">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-orange-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Kredit Jatuh Tempo Dalam 30 Hari
+                            </h3>
+                            @if ($totalUpcomingCredits > 0)
+                                <a href="{{ route('sales.credit') }}"
+                                    class="text-sm text-blue-600 hover:text-blue-900 flex items-center">
+                                    <span>Lihat semua</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            @endif
+                        </div>
+                        <div class="mt-2">
+                            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Faktur
+                                            </th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Pelanggan
+                                            </th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Tanggal Jatuh Tempo
+                                            </th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Jumlah Terhutang
+                                            </th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Status
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 bg-white">
+                                        @forelse($upcomingCredits as $credit)
+                                            <tr class="hover:bg-gray-50 transition-colors">
+                                                <td class="whitespace-nowrap px-6 py-3">
+                                                    <a href="{{ route('sales.show', $credit) }}"
+                                                        class="text-blue-600 hover:text-blue-900 font-medium flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                        {{ $credit->invoice_number }}
+                                                    </a>
+                                                </td>
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm text-gray-500">
+                                                    <span class="inline-flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-4 w-4 mr-1 text-gray-400" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                        </svg>
                                                         {{ $credit->customer->nama ?? 'Pelanggan Tidak Diketahui' }}
-                                                    </td>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                                        {{ \Carbon\Carbon::parse($credit->due_date)->format('d/m/Y') }}
-                                                    </td>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                                        Rp {{ number_format($credit->remaining_amount, 0, ',', '.') }}
-                                                    </td>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm">
-                                                        @if (\Carbon\Carbon::parse($credit->due_date)->isPast())
-                                                            <span
-                                                                class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
-                                                                Terlambat
-                                                            </span>
-                                                        @elseif(\Carbon\Carbon::parse($credit->due_date)->diffInDays(now()) <= 7)
-                                                            <span
-                                                                class="inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
-                                                                Segera Jatuh Tempo
-                                                            </span>
-                                                        @else
-                                                            <span
-                                                                class="inline-flex rounded-full bg-orange-100 px-2 text-xs font-semibold leading-5 text-orange-800">
-                                                                Akan Datang
-                                                            </span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="5"
-                                                        class="px-6 py-4 text-center text-sm text-gray-500">
-                                                        Tidak ada kredit yang akan datang ditemukan
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                    </span>
+                                                </td>
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm text-gray-500">
+                                                    {{ \Carbon\Carbon::parse($credit->due_date)->format('d/m/Y') }}
+                                                </td>
+                                                <td
+                                                    class="whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900">
+                                                    Rp {{ number_format($credit->remaining_amount, 0, ',', '.') }}
+                                                </td>
+                                                <td class="whitespace-nowrap px-6 py-3 text-sm">
+                                                    @if (\Carbon\Carbon::parse($credit->due_date)->isPast())
+                                                        <span
+                                                            class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                                                            <svg class="mr-1 h-2 w-2 text-red-400" fill="currentColor"
+                                                                viewBox="0 0 8 8">
+                                                                <circle cx="4" cy="4" r="3" />
+                                                            </svg>
+                                                            Terlambat
+                                                        </span>
+                                                    @elseif(\Carbon\Carbon::parse($credit->due_date)->diffInDays(now()) <= 7)
+                                                        <span
+                                                            class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                                                            <svg class="mr-1 h-2 w-2 text-yellow-400"
+                                                                fill="currentColor" viewBox="0 0 8 8">
+                                                                <circle cx="4" cy="4" r="3" />
+                                                            </svg>
+                                                            Segera Jatuh Tempo
+                                                        </span>
+                                                    @else
+                                                        <span
+                                                            class="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800">
+                                                            <svg class="mr-1 h-2 w-2 text-orange-400"
+                                                                fill="currentColor" viewBox="0 0 8 8">
+                                                                <circle cx="4" cy="4" r="3" />
+                                                            </svg>
+                                                            Akan Datang
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="px-6 py-8 text-center">
+                                                    <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <p class="text-gray-500 font-medium">Tidak ada kredit yang akan
+                                                        jatuh tempo</p>
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -414,6 +605,10 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
@@ -444,7 +639,7 @@
                         labels: @json($topProducts->pluck('name')),
                         datasets: [{
                             label: 'Unit Terjual',
-                            data: @json($topProducts->pluck('total_sold')), // Changed from sale_details_sum_quantity
+                            data: @json($topProducts->pluck('total_sold')),
                             backgroundColor: [
                                 'rgba(59, 130, 246, 0.8)',
                                 'rgba(16, 185, 129, 0.8)',
@@ -452,12 +647,25 @@
                                 'rgba(239, 68, 68, 0.8)',
                                 'rgba(139, 92, 246, 0.8)'
                             ],
+                            borderColor: [
+                                'rgb(59, 130, 246)',
+                                'rgb(16, 185, 129)',
+                                'rgb(245, 158, 11)',
+                                'rgb(239, 68, 68)',
+                                'rgb(139, 92, 246)'
+                            ],
                             borderWidth: 1
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
