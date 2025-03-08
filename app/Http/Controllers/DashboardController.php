@@ -12,10 +12,30 @@ class DashboardController extends Controller
     public function index()
     {
         // Data untuk cards
+        $totalSalesToday = Sale::whereDate('created_at', Carbon::today())->sum('total_amount');
+        $totalSalesYesterday = Sale::whereDate('created_at', Carbon::yesterday())->sum('total_amount');
+        $totalSalesThisMonth = Sale::whereMonth('created_at', Carbon::now()->month)->sum('total_amount');
+        $totalSalesLastMonth = Sale::whereMonth('created_at', Carbon::now()->subMonth()->month)->sum('total_amount');
+
         $data['totalProducts'] = Product::count();
-        $data['totalSalesToday'] = Sale::whereDate('created_at', Carbon::today())->sum('total_amount');
-        $data['totalSalesThisMonth'] = Sale::whereMonth('created_at', Carbon::now()->month)->sum('total_amount');
+        $data['totalSalesToday'] = $totalSalesToday;
+        $data['totalSalesThisMonth'] = $totalSalesThisMonth;
         $data['lowStockProducts'] = Product::whereColumn('stock', '<=', 'min_stock')->count();
+
+        // Menghitung persentase perubahan harian
+        $salesChangeToday = 0;
+        if ($totalSalesYesterday > 0) {
+            $salesChangeToday = (($totalSalesToday - $totalSalesYesterday) / $totalSalesYesterday) * 100;
+        }
+
+        // Menghitung persentase perubahan bulanan
+        $salesChangeThisMonth = 0;
+        if ($totalSalesLastMonth > 0) {
+            $salesChangeThisMonth = (($totalSalesThisMonth - $totalSalesLastMonth) / $totalSalesLastMonth) * 100;
+        }
+
+        $data['salesChangeToday'] = $salesChangeToday;
+        $data['salesChangeThisMonth'] = $salesChangeThisMonth;
 
         // Data hutang jatuh tempo dalam 1 bulan
         $data['upcomingCredits'] = Sale::where('payment_method', 'credit')
@@ -60,20 +80,19 @@ class DashboardController extends Controller
         }
         $data['dailySales'] = $dates;
 
-        // Data untuk produk terlaris - Pendekatan lebih sederhana
-        $products = Product::all();
-        $productsWithSales = $products->map(function ($product) {
-            $totalSold = $product->saleDetails()
-                ->whereHas('sale', function ($query) {
-                    $query->whereNull('deleted_at');
-                })
-                ->sum('quantity');
-
-            return [
-                'name' => $product->name,
-                'total_sold' => $totalSold
-            ];
-        })->sortByDesc('total_sold')
+        // Data untuk produk terlaris
+        $productsWithSales = Product::with(['saleDetails.sale' => function ($query) {
+            $query->whereNull('deleted_at');
+        }])
+            ->get()
+            ->map(function ($product) {
+                $totalSold = $product->saleDetails->sum('quantity');
+                return [
+                    'name' => $product->name,
+                    'total_sold' => $totalSold
+                ];
+            })
+            ->sortByDesc('total_sold')
             ->take(5)
             ->values();
 

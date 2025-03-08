@@ -73,26 +73,32 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
-                                        NIK</th>
+                                        NIK
+                                    </th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
-                                        Nama</th>
+                                        Nama
+                                    </th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
-                                        Alamat</th>
+                                        Alamat
+                                    </th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
-                                        Total Penjualan</th>
+                                        Total Penjualan
+                                    </th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
-                                        Jumlah Total</th>
+                                        Jumlah Total
+                                    </th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
-                                        Aksi</th>
+                                        Aksi
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200" id="customersTableBody">
-                                @foreach ($customers as $customer)
+                                @forelse ($customers as $customer)
                                     <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $customer->nik }}
                                         </td>
@@ -155,9 +161,27 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="px-6 py-10 text-center text-gray-500">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <svg class="h-10 w-10 text-gray-400 mb-3" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                </svg>
+                                                <p class="text-gray-500 text-lg font-medium">Tidak ada pelanggan
+                                                    ditemukan.</p>
+                                                <p class="text-gray-400 text-sm mt-1">Tambahkan pelanggan baru untuk
+                                                    memulai.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
+
                     </div>
 
                     <div class="mt-4">
