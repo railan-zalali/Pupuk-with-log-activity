@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
@@ -149,3 +150,13 @@ Route::middleware('auth')->group(function () {
 });
 require __DIR__ . '/auth.php';
 Route::get('search/products', [ProductController::class, 'search'])->name('products.search');
+
+
+// Routes untuk log aktivitas
+Route::middleware(['auth'])->group(function () {
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
+    Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity_logs.show');
+    Route::delete('/activity-logs/{activityLog}', [ActivityLogController::class, 'destroy'])->name('activity_logs.destroy');
+    Route::delete('/activity-logs', [ActivityLogController::class, 'destroyAll'])->name('activity_logs.destroy.all');
+    Route::get('/activity-logs/export', [ActivityLogController::class, 'export'])->name('activity_logs.export');
+});

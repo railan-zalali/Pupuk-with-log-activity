@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, LogsActivity;
+
+    // Definisikan properti untuk log aktivitas
+    protected $activityLogType = 'inventory';
+    protected $activityLogModule = 'Customer';
     protected $fillable = [
         'nik',
         'nama',

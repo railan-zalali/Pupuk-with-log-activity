@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Sale;
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
+
+        // Ambil data log aktivitas terbaru
+        $latestLogs = ActivityLogService::getLatestLogs(5);
+
+        $data['latestLogs'] = $latestLogs;
         // Data untuk cards
         $totalSalesToday = Sale::whereDate('created_at', Carbon::today())->sum('total_amount');
         $totalSalesYesterday = Sale::whereDate('created_at', Carbon::yesterday())->sum('total_amount');
