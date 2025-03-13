@@ -23,6 +23,8 @@ return new class extends Migration
             $table->decimal('down_payment', 15, 2)->default(0);
             $table->decimal('change_amount', 12, 2);
             $table->enum('payment_method', ['cash', 'transfer', 'credit']);
+            $table->string('vehicle_type')->nullable();
+            $table->string('vehicle_number')->nullable();
             $table->string('payment_status')->default('paid');
             $table->enum('status', ['draft', 'completed', 'cancelled'])->default('completed');
             $table->decimal('remaining_amount', 15, 2)->default(0);

@@ -114,11 +114,11 @@
     <div class="no-print" style="position: fixed; top: 20px; right: 20px;">
         <button onclick="window.print()"
             style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Print Invoice
+            Cetak Invoice
         </button>
         <button onclick="window.close()"
             style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
-            Close
+            Tutup
         </button>
     </div>
 
@@ -134,25 +134,25 @@
 
     <div class="info-grid">
         <div class="info-section">
-            <h3>Sale Information</h3>
+            <h3>Informasi Penjualan</h3>
             <div class="info-item">
-                <div class="info-label">Date</div>
+                <div class="info-label">Tanggal</div>
                 <div>{{ \Carbon\Carbon::parse($sale->date)->format('d/m/Y H:i') }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">Status</div>
-                <div>{{ $sale->trashed() ? 'Void' : 'Completed' }}</div>
+                <div>{{ $sale->trashed() ? 'Dibatalkan' : 'Selesai' }}</div>
             </div>
         </div>
 
         <div class="info-section">
-            <h3>Customer Information</h3>
+            <h3>Informasi Pelanggan</h3>
             <div class="info-item">
-                <div class="info-label">Customer Name</div>
-                <div>{{ $sale->customer_name ?? '-' }}</div>
+                <div class="info-label">Nama Pelanggan</div>
+                <div>{{ $sale->customer->nama ?? '-' }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Payment Method</div>
+                <div class="info-label">Metode Pembayaran</div>
                 <div>{{ ucfirst($sale->payment_method) }}</div>
                 @if ($sale->payment_method === 'credit')
                     <div class="total-row">
@@ -175,9 +175,9 @@
         </div>
 
         <div class="info-section">
-            <h3>Payment Information</h3>
+            <h3>Informasi Pembayaran</h3>
             <div class="info-item">
-                <div class="info-label">Total Amount</div>
+                <div class="info-label">Total</div>
                 <div>Rp {{ number_format($sale->total_amount, 0, ',', '.') }}</div>
             </div>
             <div class="total-row">
@@ -193,11 +193,11 @@
                 <div>Rp {{ number_format($sale->total_amount - $sale->discount, 0, ',', '.') }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Paid Amount</div>
+                <div class="info-label">Jumlah Dibayar</div>
                 <div>Rp {{ number_format($sale->paid_amount, 0, ',', '.') }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Change</div>
+                <div class="info-label">Kembalian</div>
                 <div>Rp {{ number_format($sale->change_amount, 0, ',', '.') }}</div>
             </div>
         </div>
@@ -207,9 +207,9 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
+                <th>Produk</th>
+                <th>Harga</th>
+                <th>Jumlah</th>
                 <th>Subtotal</th>
             </tr>
         </thead>
@@ -235,19 +235,19 @@
             <div>Rp {{ number_format($sale->total_amount, 0, ',', '.') }}</div>
         </div>
         <div class="total-row">
-            <div class="total-label">Paid Amount:</div>
+            <div class="total-label">Jumlah Dibayar:</div>
             <div>Rp {{ number_format($sale->paid_amount, 0, ',', '.') }}</div>
         </div>
         <div class="total-row">
-            <div class="total-label">Change:</div>
+            <div class="total-label">Kembalian:</div>
             <div>Rp {{ number_format($sale->change_amount, 0, ',', '.') }}</div>
         </div>
     </div>
 
     <div class="footer">
-        <p>Thank you for your purchase!</p>
-        <p style="font-size: 12px; color: #666;">Please keep this invoice for your records.</p>
-        <p style="font-size: 12px; color: #666;">Cashier: {{ $sale->user->name }}</p>
+        <p>Terima kasih atas pembelian Anda!</p>
+        <p style="font-size: 12px; color: #666;">Harap simpan invoice ini sebagai bukti pembelian.</p>
+        <p style="font-size: 12px; color: #666;">Kasir: {{ $sale->user->name }}</p>
     </div>
 </body>
 

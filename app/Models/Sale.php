@@ -25,6 +25,8 @@ class Sale extends Model
         'down_payment',
         'change_amount',
         'payment_method',
+        'vehicle_type',
+        'vehicle_number',
         'payment_status',
         'status',
         'remaining_amount',

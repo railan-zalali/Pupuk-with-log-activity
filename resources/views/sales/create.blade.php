@@ -122,6 +122,21 @@ if (!function_exists('formatRupiah')) {
                                     </select>
                                     <x-input-error :messages="$errors->get('payment_method')" class="mt-2" />
                                 </div>
+
+                                <div>
+                                    <x-input-label for="vehicle_type" value="Jenis Kendaraan" />
+                                    <select id="vehicle_type" name="vehicle_type"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <option value="Truk">Truk</option>
+                                        <option value="Pickup">Pickup</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <x-input-label for="vehicle_number" value="Nomor Kendaraan" />
+                                    <x-text-input id="vehicle_number" name="vehicle_number" type="text"
+                                        class="mt-1 block w-full" />
+                                </div>
                             </div>
                         </div>
 
