@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
+
+    use LogsActivity;
+
+    protected $activityLogType = 'master data';
+    protected $activityLogModule = 'Role';
+
     protected $fillable = ['name', 'slug', 'description'];
 
     public function permissions()

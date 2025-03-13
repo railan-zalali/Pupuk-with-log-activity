@@ -180,6 +180,31 @@
                             </h3>
 
                             <div class="mt-1">
+                                <div class="flex space-x-4 mb-4">
+                                    <label for="image" class="cursor-pointer flex-1">
+                                        <div
+                                            class="px-4 py-2 text-center border border-gray-300 rounded-md hover:bg-gray-50">
+                                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                            </svg>
+                                            Upload Gambar
+                                        </div>
+                                    </label>
+                                    <button type="button" id="camera-button"
+                                        class="flex-1 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        Ambil Foto
+                                    </button>
+                                </div>
+
                                 <label for="image" class="cursor-pointer block">
                                     <div id="dropzone-container"
                                         class="relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200 bg-gray-50 overflow-hidden">
@@ -187,14 +212,13 @@
                                         <div id="placeholder-area"
                                             class="flex flex-col items-center justify-center p-6 text-center">
                                             <svg class="mb-3 h-14 w-14 text-gray-400" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg">
+                                                stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
                                                 </path>
                                             </svg>
                                             <p class="mb-2 text-sm text-gray-700 font-medium">Klik untuk upload gambar
-                                            </p>
+                                                atau ambil foto</p>
                                             <p class="text-xs text-gray-500">PNG, JPG, JPEG maksimal 2MB</p>
                                         </div>
 
@@ -216,11 +240,30 @@
                                         </button>
                                     </div>
                                     <input id="image" name="image" type="file" class="hidden"
-                                        accept="image/*" />
+                                        accept="image/*" capture="environment" />
                                 </label>
                                 <x-input-error :messages="$errors->get('image')" class="mt-2" />
                             </div>
                         </div>
+
+                        <!-- Camera Modal -->
+                        <div id="camera-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
+                            <div class="relative w-full max-w-lg mx-auto mt-10">
+                                <div class="bg-white rounded-lg shadow-xl">
+                                    <div class="p-4">
+                                        <video id="camera-preview" class="w-full h-64 object-cover"></video>
+                                        <div class="mt-4 flex justify-end space-x-2">
+                                            <button type="button" id="capture-photo"
+                                                class="px-4 py-2 bg-indigo-600 text-white rounded-md">Ambil
+                                                Foto</button>
+                                            <button type="button" id="close-camera"
+                                                class="px-4 py-2 border border-gray-300 rounded-md">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <!-- Form Actions -->
                         <div class="flex justify-end space-x-3">
@@ -325,6 +368,69 @@
                         imageInput.dispatchEvent(event);
                     }
                 }
+            });
+            // Camera functionality
+            const cameraButton = document.getElementById('camera-button');
+            const cameraModal = document.getElementById('camera-modal');
+            const cameraPreview = document.getElementById('camera-preview');
+            const captureButton = document.getElementById('capture-photo');
+            const closeCamera = document.getElementById('close-camera');
+            let stream = null;
+
+            // Open camera modal and start stream
+            cameraButton.addEventListener('click', async () => {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'environment' // Use back camera if available
+                        }
+                    });
+                    cameraPreview.srcObject = stream;
+                    cameraPreview.play();
+                    cameraModal.classList.remove('hidden');
+                } catch (err) {
+                    console.error("Error accessing camera:", err);
+                    alert("Tidak dapat mengakses kamera. Pastikan Anda memberikan izin untuk menggunakan kamera.");
+                }
+            });
+
+            // Capture photo
+            captureButton.addEventListener('click', () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = cameraPreview.videoWidth;
+                canvas.height = cameraPreview.videoHeight;
+                canvas.getContext('2d').drawImage(cameraPreview, 0, 0);
+
+                // Convert canvas to file
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], "camera-capture.jpg", {
+                        type: "image/jpeg"
+                    });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+
+                    // Update file input and trigger change event
+                    const imageInput = document.getElementById('image');
+                    imageInput.files = dataTransfer.files;
+
+                    // Trigger change event manually
+                    const event = new Event('change', {
+                        bubbles: true
+                    });
+                    imageInput.dispatchEvent(event);
+
+                    // Close camera
+                    closeCamera.click();
+                }, 'image/jpeg');
+            });
+
+            // Close camera modal and stop stream
+            closeCamera.addEventListener('click', () => {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+                cameraModal.classList.add('hidden');
             });
         </script>
     @endpush

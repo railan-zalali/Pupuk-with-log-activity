@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         // Memanggil RolePermissionSeeder
         $this->call([
             RolePermissionSeeder::class,
+            ActivityLogPermissionSeeder::class,
         ]);
     }
 }

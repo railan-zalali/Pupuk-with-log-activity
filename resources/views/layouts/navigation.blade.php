@@ -23,13 +23,6 @@
                         {{ __('Pelanggan') }}
                     </x-nav-link>
 
-                    {{-- <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                        {{ __('Users') }}
-                    </x-nav-link>
-
-                    <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
-                        {{ __('Roles') }}
-                    </x-nav-link> --}}
                     @if (auth()->user()->hasRole('admin'))
                         <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
                             {{ __('Supplier') }}
@@ -53,8 +46,26 @@
                     @endif
 
                     {{-- @endif --}}
-                    <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')">
+                    <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
                         {{ __('Sales') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('sales.drafts')" :active="request()->routeIs('sales.drafts')">
+                        <div class="flex items-center">
+                            {{ __('Draft Transaksi') }}
+
+                            <!-- Badge Counter -->
+                            @php
+                                $draftCount = App\Models\Sale::where('status', 'draft')->count();
+                            @endphp
+
+                            @if ($draftCount > 0)
+                                <span
+                                    class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-indigo-500 rounded-full">
+                                    {{ $draftCount }}
+                                </span>
+                            @endif
+                        </div>
                     </x-nav-link>
 
                     <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
@@ -163,8 +174,26 @@
 
 
             {{-- @endrole --}}
-            <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.*')">
+            <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
                 {{ __('Penjualan') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('sales.drafts')" :active="request()->routeIs('sales.drafts')">
+                <div class="flex items-center">
+                    {{ __('Draft Transaksi') }}
+
+                    <!-- Badge Counter -->
+                    @php
+                        $draftCount = App\Models\Sale::where('status', 'draft')->count();
+                    @endphp
+
+                    @if ($draftCount > 0)
+                        <span
+                            class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-indigo-500 rounded-full">
+                            {{ $draftCount }}
+                        </span>
+                    @endif
+                </div>
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">

@@ -12,7 +12,7 @@ class Customer extends Model
     use SoftDeletes, HasFactory, LogsActivity;
 
     // Definisikan properti untuk log aktivitas
-    protected $activityLogType = 'inventory';
+    protected $activityLogType = 'master data';
     protected $activityLogModule = 'Customer';
     protected $fillable = [
         'nik',

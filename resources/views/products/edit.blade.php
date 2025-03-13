@@ -176,7 +176,7 @@
                                             <input type="number" name="selling_price" id="selling_price"
                                                 value="{{ old('selling_price', $product->selling_price) }}"
                                                 class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md"
-                                                min="0" step="100" required>
+                                                min="0" required>
                                         </div>
                                         @error('selling_price')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

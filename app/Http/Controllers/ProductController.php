@@ -14,7 +14,10 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->latest()->paginate(10);
+        $products = Product::with('category')
+            ->orderByRaw('CASE WHEN stock < min_stock THEN 0 ELSE 1 END')
+            ->orderBy('stock')
+            ->paginate(10);
         return view('products.index', compact('products'));
     }
 
@@ -27,7 +30,7 @@ class ProductController extends Controller
         $baseCode = 'PRD-' . $today . '-';
 
         // Find the highest number for today's products
-        $lastProduct = Product::where('code', 'like', $baseCode . '%')
+        $lastProduct = Product::withTrashed()->where('code', 'like', $baseCode . '%')
             ->orderBy('code', 'desc')
             ->first();
 
@@ -41,7 +44,7 @@ class ProductController extends Controller
         $productCode = $baseCode . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
 
         // Make sure it's unique
-        while (Product::where('code', $productCode)->exists()) {
+        while (Product::withTrashed()->where('code', $productCode)->exists()) {
             $newNumber++;
             $productCode = $baseCode . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
         }
@@ -53,7 +56,7 @@ class ProductController extends Controller
     {
         // Re-check if the code is unique before validating
         $code = $request->input('code');
-        if (Product::where('code', $code)->exists()) {
+        if (Product::withTrashed()->where('code', $code)->exists()) {
             // Generate a new unique code
             $today = date('Ymd');
             $baseCode = 'PRD-' . $today . '-';
@@ -66,7 +69,7 @@ class ProductController extends Controller
             $newCode = $baseCode . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
 
             // Make sure new code is unique
-            while (Product::where('code', $newCode)->exists()) {
+            while (Product::withTrashed()->where('code', $newCode)->exists()) {
                 $newNumber++;
                 $newCode = $baseCode . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
             }
@@ -78,7 +81,8 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
-            'code' => 'required|string|unique:products',
+            // 'code' => 'required|string|unique:products',
+            'code' => 'required|string|unique:products,code,NULL,id,deleted_at,NULL',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'purchase_price' => 'required|numeric|min:0',
@@ -121,66 +125,6 @@ class ProductController extends Controller
             ->route('products.index')
             ->with('success', 'Product created successfully');
     }
-    // public function create()
-    // {
-    //     $categories = Category::orderBy('name')->get();
-
-    //     // Generate kode produk
-    //     $lastProduct = Product::whereDate('created_at', Carbon::today())->latest()->first();
-    //     $lastNumber = $lastProduct ? intval(substr($lastProduct->code, -4)) : 0;
-    //     $productCode = 'PRD-' . date('Ymd') . '-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-
-    //     return view('products.create', compact('categories', 'productCode'));
-    // }
-
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'category_id' => 'required|exists:categories,id',
-    //         'name' => 'required|string|max:255',
-    //         'code' => 'required|string|unique:products',
-    //         'description' => 'nullable|string',
-    //         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    //         'purchase_price' => 'required|numeric|min:0',
-    //         'selling_price' => 'required|numeric|min:0',
-    //         'stock' => 'required|integer|min:0',
-    //         'min_stock' => 'required|integer|min:0'
-    //     ]);
-
-    //     // Process image if uploaded
-    //     if ($request->hasFile('image')) {
-    //         $image = $request->file('image');
-    //         $imageName = time() . '_' . $image->getClientOriginalName();
-
-    //         // Make sure the directory exists
-    //         Storage::makeDirectory('public/products');
-
-    //         // Store the image with a consistent path
-    //         $image->storeAs('products', $imageName, 'public');
-    //         $validated['image_path'] = 'products/' . $imageName;
-    //     }
-
-    //     $product = Product::create($validated);
-
-    //     // Record initial stock movement
-    //     $initialStock = $validated['stock'];
-    //     if ($initialStock > 0) {
-    //         StockMovement::create([
-    //             'product_id' => $product->id,
-    //             'type' => 'in',
-    //             'quantity' => $initialStock,
-    //             'before_stock' => 0,
-    //             'after_stock' => $initialStock,
-    //             'reference_type' => 'initial',
-    //             'reference_id' => $product->id,
-    //             'notes' => 'Initial stock'
-    //         ]);
-    //     }
-
-    //     return redirect()
-    //         ->route('products.index')
-    //         ->with('success', 'Product created successfully');
-    // }
 
     public function show(Product $product)
     {

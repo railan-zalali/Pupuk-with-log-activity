@@ -128,15 +128,18 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware(['permission:manage-sales'])->group(function () {
+
         Route::get('sales/credit', [SaleController::class, 'creditSales'])->name('sales.credit');
+        Route::get('sales/drafts', [SaleController::class, 'drafts'])->name('sales.drafts');
+
+
+        Route::get('sales/{sale}/complete-draft', [SaleController::class, 'completeDraft'])->name('sales.complete-draft');
+
+        Route::get('/products/{product}/get', [SaleController::class, 'getProduct'])->name('products.get');
+        Route::get('sales/{sale}/invoice', [SaleController::class, 'invoice'])->name('sales.invoice');
+        Route::post('/sales/{sale}/pay', [SaleController::class, 'payCredit'])->name('sales.pay');
 
         Route::resource('sales', SaleController::class);
-
-        Route::get('/products/{product}/get', [SaleController::class, 'getProduct'])
-            ->name('products.get');
-        Route::get('sales/{sale}/invoice', [SaleController::class, 'invoice'])
-            ->name('sales.invoice');
-        Route::post('/sales/{sale}/pay', [SaleController::class, 'payCredit'])->name('sales.pay');
     });
 
     // Report routes
@@ -153,7 +156,7 @@ Route::get('search/products', [ProductController::class, 'search'])->name('produ
 
 
 // Routes untuk log aktivitas
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'log.activity'])->group(function () {
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
     Route::get('/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('activity_logs.show');
     Route::delete('/activity-logs/{activityLog}', [ActivityLogController::class, 'destroy'])->name('activity_logs.destroy');

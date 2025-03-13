@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sale extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory, LogsActivity;
+
+    protected $activityLogType = 'transaction';
+    protected $activityLogModule = 'sale';
 
     protected $fillable = [
         'invoice_number',
@@ -21,6 +26,7 @@ class Sale extends Model
         'change_amount',
         'payment_method',
         'payment_status',
+        'status',
         'remaining_amount',
         'due_date',
         'notes'
@@ -38,5 +44,24 @@ class Sale extends Model
     public function saleDetails()
     {
         return $this->hasMany(SaleDetail::class);
+    }
+    public function scopeDrafts($query)
+    {
+        return $query->where('status', 'draft');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    public function isDraft()
+    {
+        return $this->status === 'draft';
+    }
+
+    public function isCompleted()
+    {
+        return $this->status === 'completed';
     }
 }

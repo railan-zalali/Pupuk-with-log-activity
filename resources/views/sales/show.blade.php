@@ -192,6 +192,15 @@
                                                 </svg>
                                                 Dibatalkan
                                             </span>
+                                        @elseif ($sale->status === 'draft')
+                                            <span
+                                                class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                                                <svg class="mr-1 h-2 w-2 text-yellow-400" fill="currentColor"
+                                                    viewBox="0 0 8 8">
+                                                    <circle cx="4" cy="4" r="3" />
+                                                </svg>
+                                                Draft
+                                            </span>
                                         @else
                                             <span
                                                 class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
@@ -199,7 +208,7 @@
                                                     viewBox="0 0 8 8">
                                                     <circle cx="4" cy="4" r="3" />
                                                 </svg>
-                                                Berhasil
+                                                Selesai
                                             </span>
                                         @endif
                                     </div>

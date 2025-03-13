@@ -441,179 +441,182 @@
                 </div>
             </div>
 
-            <!-- Activity Logs Section -->
-            <div class="mt-8">
-                <div class="overflow-hidden rounded-lg bg-white shadow-sm border border-gray-100">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold leading-6 text-gray-900 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-500"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Aktivitas Terbaru
-                            </h3>
-                            <a href="{{ route('activity_logs.index') }}"
-                                class="text-sm text-blue-600 hover:text-blue-900 flex items-center">
-                                <span>Lihat semua</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="mt-2">
-                            <div class="divide-y divide-gray-200">
-                                @forelse($latestLogs as $log)
-                                    <div class="py-3 flex items-start">
-                                        <div class="flex-shrink-0">
-                                            <span
-                                                class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-{{ ActivityLogHelper::getActivityBadgeColor($log->action) }}-100 text-{{ ActivityLogHelper::getActivityBadgeColor($log->action) }}-600">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    @switch(ActivityLogHelper::getActivityIcon($log->action))
-                                                        @case('plus')
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2" d="M12 4v16m8-8H4" />
-                                                        @break
+            @if (auth()->user()->hasRole('admin'))
+                <!-- Activity Logs Section -->
+                <div class="mt-8">
+                    <div class="overflow-hidden rounded-lg bg-white shadow-sm border border-gray-100">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold leading-6 text-gray-900 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-500"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Aktivitas Terbaru
+                                </h3>
+                                <a href="{{ route('activity_logs.index') }}"
+                                    class="text-sm text-blue-600 hover:text-blue-900 flex items-center">
+                                    <span>Lihat semua</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="mt-2">
+                                <div class="divide-y divide-gray-200">
+                                    @forelse($latestLogs as $log)
+                                        <div class="py-3 flex items-start">
+                                            <div class="flex-shrink-0">
+                                                <span
+                                                    class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-{{ ActivityLogHelper::getActivityBadgeColor($log->action) }}-100 text-{{ ActivityLogHelper::getActivityBadgeColor($log->action) }}-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        @switch(ActivityLogHelper::getActivityIcon($log->action))
+                                                            @case('plus')
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M12 4v16m8-8H4" />
+                                                            @break
 
-                                                        <!-- Case statements remain the same -->
-                                                    @endswitch
+                                                            <!-- Case statements remain the same -->
+                                                        @endswitch
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div class="ml-4 flex-1">
+                                                <a href="{{ route('activity_logs.show', $log) }}"
+                                                    class="text-sm font-medium text-gray-900 hover:text-blue-600">
+                                                    {{ ucfirst($log->type) }} - {{ ucfirst($log->module) }}
+                                                </a>
+                                                <p class="mt-1 text-sm text-gray-600">
+                                                    {{ Str::limit($log->description, 100) }}
+                                                </p>
+                                                <p class="mt-1 text-xs text-gray-500">
+                                                    {{ $log->created_at->diffForHumans() }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        @empty
+                                            <div class="py-8 text-center">
+                                                <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                            </span>
-                                        </div>
-                                        <div class="ml-4 flex-1">
-                                            <a href="{{ route('activity_logs.show', $log) }}"
-                                                class="text-sm font-medium text-gray-900 hover:text-blue-600">
-                                                {{ ucfirst($log->type) }} - {{ ucfirst($log->module) }}
-                                            </a>
-                                            <p class="mt-1 text-sm text-gray-600">
-                                                {{ Str::limit($log->description, 100) }}
-                                            </p>
-                                            <p class="mt-1 text-xs text-gray-500">
-                                                {{ $log->created_at->diffForHumans() }}
-                                            </p>
-                                        </div>
+                                                <p class="text-gray-500 font-medium">Belum ada aktivitas yang tercatat</p>
+                                            </div>
+                                        @endforelse
                                     </div>
-                                    @empty
-                                        <div class="py-8 text-center">
-                                            <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <p class="text-gray-500 font-medium">Belum ada aktivitas yang tercatat</p>
-                                        </div>
-                                    @endforelse
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
+            @endif
+        </div>
 
-            @push('scripts')
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <script>
-                    // Format Rupiah
-                    function formatRupiah(number) {
-                        return 'Rp ' + new Intl.NumberFormat('id-ID').format(number);
+        @push('scripts')
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                // Format Rupiah
+                function formatRupiah(number) {
+                    return 'Rp ' + new Intl.NumberFormat('id-ID').format(number);
+                }
+
+                // Daily Sales Chart
+                const dailySalesChart = new Chart(
+                    document.getElementById('dailySalesChart'), {
+                        type: 'line',
+                        data: {
+                            labels: @json($dailySales->pluck('date')->map(fn($date) => \Carbon\Carbon::parse($date)->format('d/m'))),
+                            datasets: [{
+                                label: 'Penjualan Harian',
+                                data: @json($dailySales->pluck('total')),
+                                borderColor: 'rgb(59, 130, 246)',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return formatRupiah(context.raw);
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return formatRupiah(value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
+                );
 
-                    // Daily Sales Chart
-                    const dailySalesChart = new Chart(
-                        document.getElementById('dailySalesChart'), {
-                            type: 'line',
-                            data: {
-                                labels: @json($dailySales->pluck('date')->map(fn($date) => \Carbon\Carbon::parse($date)->format('d/m'))),
-                                datasets: [{
-                                    label: 'Penjualan Harian',
-                                    data: @json($dailySales->pluck('total')),
-                                    borderColor: 'rgb(59, 130, 246)',
-                                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                                    borderWidth: 2,
-                                    fill: true,
-                                    tension: 0.4
-                                }]
+                // Top Products Chart
+                const topProductsChart = new Chart(
+                    document.getElementById('topProductsChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: @json($topProducts->pluck('name')),
+                            datasets: [{
+                                label: 'Unit Terjual',
+                                data: @json($topProducts->pluck('total_sold')),
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',
+                                    'rgba(16, 185, 129, 0.8)',
+                                    'rgba(245, 158, 11, 0.8)',
+                                    'rgba(239, 68, 68, 0.8)',
+                                    'rgba(139, 92, 246, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgb(59, 130, 246)',
+                                    'rgb(16, 185, 129)',
+                                    'rgb(245, 158, 11)',
+                                    'rgb(239, 68, 68)',
+                                    'rgb(139, 92, 246)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
                             },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: {
-                                        display: true,
-                                        position: 'top'
-                                    },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function(context) {
-                                                return formatRupiah(context.raw);
-                                            }
-                                        }
-                                    }
-                                },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        ticks: {
-                                            callback: function(value) {
-                                                return formatRupiah(value);
-                                            }
-                                        }
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
                                     }
                                 }
                             }
                         }
-                    );
-
-                    // Top Products Chart
-                    const topProductsChart = new Chart(
-                        document.getElementById('topProductsChart'), {
-                            type: 'bar',
-                            data: {
-                                labels: @json($topProducts->pluck('name')),
-                                datasets: [{
-                                    label: 'Unit Terjual',
-                                    data: @json($topProducts->pluck('total_sold')),
-                                    backgroundColor: [
-                                        'rgba(59, 130, 246, 0.8)',
-                                        'rgba(16, 185, 129, 0.8)',
-                                        'rgba(245, 158, 11, 0.8)',
-                                        'rgba(239, 68, 68, 0.8)',
-                                        'rgba(139, 92, 246, 0.8)'
-                                    ],
-                                    borderColor: [
-                                        'rgb(59, 130, 246)',
-                                        'rgb(16, 185, 129)',
-                                        'rgb(245, 158, 11)',
-                                        'rgb(239, 68, 68)',
-                                        'rgb(139, 92, 246)'
-                                    ],
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: {
-                                        display: true,
-                                        position: 'top'
-                                    }
-                                },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        ticks: {
-                                            stepSize: 1
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    );
-                </script>
-            @endpush
+                    }
+                );
+            </script>
+        @endpush
     </x-app-layout>

@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Purchase extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity, HasFactory;
+
+    protected $activityLogType = 'transaction';
+    protected $activityLogModule = 'purchase';
 
     protected $fillable = [
         'invoice_number',

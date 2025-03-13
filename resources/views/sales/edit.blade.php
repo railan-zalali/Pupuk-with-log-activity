@@ -1,13 +1,4 @@
-<?php
-if (!function_exists('formatRupiah')) {
-    function formatRupiah($number)
-    {
-        return 'Rp ' . number_format(round($number), 0, ',', '.');
-    }
-}
-?>
 <x-app-layout>
-    <!-- Header yang diperbarui untuk sales.create.blade.php -->
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -16,12 +7,12 @@ if (!function_exists('formatRupiah')) {
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        {{ __('Buat Penjualan Baru') }}
+                        {{ __('Edit Draft Transaksi') }}
                     </span>
                 </h2>
-                <p class="mt-1 text-sm text-gray-600">Kelola semua transaksi penjualan Anda dalam satu tempat</p>
+                <p class="mt-1 text-sm text-gray-600">Edit draft transaksi penjualan #{{ $sale->invoice_number }}</p>
             </div>
         </div>
     </x-slot>
@@ -34,7 +25,7 @@ if (!function_exists('formatRupiah')) {
                         <div class="flex-shrink-0">
                             <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd"
-                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                                     clip-rule="evenodd" />
                             </svg>
                         </div>
@@ -58,8 +49,9 @@ if (!function_exists('formatRupiah')) {
 
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form action="{{ route('sales.store') }}" method="POST" id="saleForm">
+                    <form action="{{ route('sales.update', $sale) }}" method="POST" id="saleForm">
                         @csrf
+                        @method('PUT')
 
                         <!-- Section: Informasi Penjualan -->
                         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
@@ -77,14 +69,13 @@ if (!function_exists('formatRupiah')) {
                                 <div>
                                     <x-input-label for="invoice_number" value="Nomor Faktur" />
                                     <x-text-input id="invoice_number" name="invoice_number" type="text"
-                                        class="mt-1 block w-full bg-gray-100" :value="$invoiceNumber" readonly />
+                                        class="mt-1 block w-full bg-gray-100" :value="$sale->invoice_number" readonly />
                                 </div>
 
                                 <div>
                                     <x-input-label for="date" value="Tanggal" />
                                     <x-text-input id="date" name="date" type="date" class="mt-1 block w-full"
-                                        :value="old('date', date('Y-m-d'))" required />
-                                    <x-input-error :messages="$errors->get('date')" class="mt-2" />
+                                        :value="old('date', date('Y-m-d', strtotime($sale->date)))" readonly />
                                 </div>
 
                                 <div>
@@ -93,8 +84,9 @@ if (!function_exists('formatRupiah')) {
                                         class="select2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                         <option value="">-- Pilih Pelanggan atau Ketik Nama Baru --</option>
                                         @foreach ($customers as $customer)
-                                            <option value="{{ $customer->id }}">{{ $customer->nama }} -
-                                                {{ $customer->nik }}
+                                            <option value="{{ $customer->id }}"
+                                                {{ $sale->customer_id == $customer->id ? 'selected' : '' }}>
+                                                {{ $customer->nama }} - {{ $customer->nik }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -108,15 +100,15 @@ if (!function_exists('formatRupiah')) {
                                     <select id="payment_method" name="payment_method"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                         required>
-                                        <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>
+                                        <option value="cash" {{ $sale->payment_method === 'cash' ? 'selected' : '' }}>
                                             Tunai
                                         </option>
                                         <option value="transfer"
-                                            {{ old('payment_method') === 'transfer' ? 'selected' : '' }}>
+                                            {{ $sale->payment_method === 'transfer' ? 'selected' : '' }}>
                                             Transfer
                                         </option>
                                         <option value="credit"
-                                            {{ old('payment_method') === 'credit' ? 'selected' : '' }}>
+                                            {{ $sale->payment_method === 'credit' ? 'selected' : '' }}>
                                             Hutang
                                         </option>
                                     </select>
@@ -170,12 +162,12 @@ if (!function_exists('formatRupiah')) {
                                         </tr>
                                     </thead>
                                     <tbody id="saleItems" class="divide-y divide-gray-200 bg-white">
+                                        <!-- Items will be loaded here -->
                                     </tbody>
                                     <tfoot class="bg-gray-50">
                                         <tr>
                                             <td colspan="4" class="px-6 py-4 text-right font-medium">Total:</td>
-                                            <td id="totalAmount" class="px-6 py-4 font-bold">{{ formatRupiah(0) }}
-                                            </td>
+                                            <td id="totalAmount" class="px-6 py-4 font-bold">Rp 0</td>
                                             <td></td>
                                         </tr>
                                         <tr id="dp_container" style="display: none;">
@@ -185,7 +177,7 @@ if (!function_exists('formatRupiah')) {
                                                 <div class="flex space-x-2">
                                                     <input type="number" name="down_payment" id="down_payment"
                                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                        value="0" min="0"
+                                                        value="{{ $sale->down_payment }}" min="0"
                                                         onchange="calculateRemainingAmount()">
                                                     <button type="button" onclick="setDownPayment(50)"
                                                         class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
@@ -206,8 +198,8 @@ if (!function_exists('formatRupiah')) {
                                                 <div class="flex space-x-2">
                                                     <input type="number" name="paid_amount" id="paid_amount"
                                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                        value="0" min="0" onchange="calculateChange()"
-                                                        required>
+                                                        value="{{ $sale->paid_amount }}" min="0"
+                                                        onchange="calculateChange()" required>
                                                     <button type="button" onclick="setExactAmount()"
                                                         class="inline-flex items-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500">
                                                         Uang Pas
@@ -221,7 +213,8 @@ if (!function_exists('formatRupiah')) {
                                             <td class="px-6 py-4">
                                                 <input type="number" name="discount" id="discount"
                                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                                    value="0" min="0" onchange="calculateFinalTotal()">
+                                                    value="{{ $sale->discount }}" min="0"
+                                                    onchange="calculateFinalTotal()">
                                             </td>
                                             <td></td>
                                         </tr>
@@ -262,23 +255,23 @@ if (!function_exists('formatRupiah')) {
                             <div>
                                 <x-input-label for="notes" value="Catatan" />
                                 <textarea id="notes" name="notes" rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('notes') }}</textarea>
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ $sale->notes }}</textarea>
                             </div>
                         </div>
 
                         <!-- Form Actions -->
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button type="button" onclick="window.history.back()"
+                            <a href="{{ route('sales.drafts') }}"
                                 class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
                                 Batal
-                            </button>
-                            <button type="submit" name="save_as_draft" value="1"
-                                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
-                                Simpan sebagai Draft
-                            </button>
+                            </a>
                             <button type="submit"
+                                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
+                                Perbarui Draft
+                            </button>
+                            <button type="submit" name="complete_transaction" value="1"
                                 class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
-                                Proses Transaksi
+                                Selesaikan Transaksi
                             </button>
                         </div>
                     </form>
@@ -291,32 +284,36 @@ if (!function_exists('formatRupiah')) {
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
-            function createItemRow() {
-                return `
-                            <tr>
-                                <td class="px-6 py-4">
-                                    <select name="product_id[]" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="updatePrice(this)">
-                                        <option value="">Pilih Produk</option>
-                                        @foreach ($products as $product)
-    <option value="{{ $product->id }}" data-price="{{ $product->selling_price }}" data-stock="{{ $product->stock }}">
-                                                {{ $product->name }}
-                                            </option>
-    @endforeach
-                                    </select>
-                                </td>
-                                <td class="px-6 py-4 available-stock">0</td>
-                                <td class="px-6 py-4">
-                                    <input type="number" name="quantity[]" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="1" min="1" onchange="calculateSubtotal(this)">
-                                </td>
-                                <td class="px-6 py-4">
-                                    <input type="number" name="selling_price[]" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="0" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 onchange="calculateSubtotal(this)">
-                                </td>
-                                <td class="px-6 py-4 subtotal">Rp 0</td>
-                                <td class="px-6 py-4">
-                                    <button type="button" onclick="removeItem(this)" class="text-red-600 hover:text-red-900">Hapus</button>
-                                </td>
-                            </tr>
-                        `;
+            // Store sale details from the sale that's being edited
+            const saleDetails = @json($sale->saleDetails);
+
+            function createItemRow(detail = null) {
+                const html = `
+                    <tr>
+                        <td class="px-6 py-4">
+                            <select name="product_id[]" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="updatePrice(this)">
+                                <option value="">Pilih Produk</option>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}" data-price="{{ $product->selling_price }}" data-stock="{{ $product->stock }}" ${detail && detail.product_id == {{ $product->id }} ? 'selected' : ''}>
+                                        {{ $product->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="px-6 py-4 available-stock">${detail ? detail.product.stock : 0}</td>
+                        <td class="px-6 py-4">
+                            <input type="number" name="quantity[]" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="${detail ? detail.quantity : 1}" min="1" onchange="calculateSubtotal(this)">
+                        </td>
+                        <td class="px-6 py-4">
+                            <input type="number" name="selling_price[]" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="${detail ? detail.selling_price : 0}" min="0" onchange="calculateSubtotal(this)" readonly>
+                        </td>
+                        <td class="px-6 py-4 subtotal">${detail ? formatRupiah(detail.subtotal) : 'Rp 0'}</td>
+                        <td class="px-6 py-4">
+                            <button type="button" onclick="removeItem(this)" class="text-red-600 hover:text-red-900">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+                return html;
             }
 
             function updatePrice(select) {
@@ -329,7 +326,7 @@ if (!function_exists('formatRupiah')) {
                 if (selectedOption.value) {
                     const price = selectedOption.dataset.price;
                     const stock = selectedOption.dataset.stock;
-                    priceInput.value = price || 0; // Set nilai default tapi tetap bisa diubah
+                    priceInput.value = price || 0;
                     stockDisplay.textContent = stock;
                     quantityInput.max = stock;
                 } else {
@@ -343,8 +340,8 @@ if (!function_exists('formatRupiah')) {
 
             function calculateSubtotal(input) {
                 const tr = input.closest('tr');
-                const quantity = Math.round(tr.querySelector('input[name="quantity[]"]').value || 0);
-                const price = Math.round(tr.querySelector('input[name="selling_price[]"]').value || 0);
+                const quantity = tr.querySelector('input[name="quantity[]"]').value || 0;
+                const price = tr.querySelector('input[name="selling_price[]"]').value || 0;
                 const subtotal = quantity * price;
                 tr.querySelector('.subtotal').textContent = formatRupiah(subtotal);
                 calculateTotal();
@@ -389,43 +386,28 @@ if (!function_exists('formatRupiah')) {
             }
 
             function calculateChange() {
-                const totalText = document.getElementById('totalAmount').textContent;
-                const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
+                const finalText = document.getElementById('finalAmount').textContent;
+                const finalTotal = parseFloat(finalText.replace('Rp ', '').replace(/\./g, '')) || 0;
                 const paid = parseFloat(document.getElementById('paid_amount').value) || 0;
-                const change = paid - total;
+                const change = paid - finalTotal;
                 document.getElementById('changeAmount').textContent = formatRupiah(Math.max(0, change));
-
-                // Validasi jumlah yang dibayar minimum HANYA untuk pembayaran tunai/transfer
-                const submitButton = document.querySelector('button[type="submit"]');
-                const paymentMethod = document.getElementById('payment_method').value;
-
-                if (paymentMethod !== 'credit' && paid < total) {
-                    // Nonaktifkan tombol submit hanya untuk transaksi non-kredit
-                    submitButton.disabled = true;
-                    submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-                } else {
-                    submitButton.disabled = false;
-                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
             }
 
             function calculateRemainingAmount() {
-                const totalText = document.getElementById('finalAmount').textContent; // Changed from totalAmount to finalAmount
-                const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
+                const finalText = document.getElementById('finalAmount').textContent;
+                const finalTotal = parseFloat(finalText.replace('Rp ', '').replace(/\./g, '')) || 0;
                 const dp = parseFloat(document.getElementById('down_payment').value) || 0;
-                const remaining = total - dp;
+                const remaining = finalTotal - dp;
 
                 document.getElementById('remainingAmount').textContent = formatRupiah(Math.max(0, remaining));
 
                 // Update hidden paid_amount field for backend processing
                 document.getElementById('paid_amount').value = dp;
-                const dpValue = parseFloat(document.getElementById('down_payment').value) || 0;
-                document.getElementById('paid_amount').value = dpValue;
 
                 // Validasi: DP tidak boleh melebihi total
-                if (dp > total) {
+                if (dp > finalTotal) {
                     alert('Uang muka tidak boleh melebihi total belanja');
-                    document.getElementById('down_payment').value = total;
+                    document.getElementById('down_payment').value = finalTotal;
                     calculateRemainingAmount();
                 }
             }
@@ -439,11 +421,7 @@ if (!function_exists('formatRupiah')) {
             }
 
             function formatRupiah(number) {
-                // Hilangkan decimal & format dengan separator ribuan
-                return 'Rp ' + Math.round(number).toLocaleString('id-ID', {
-                    maximumFractionDigits: 0,
-                    currencyDisplay: 'symbol'
-                });
+                return 'Rp ' + number.toLocaleString('id-ID');
             }
 
             function addItem() {
@@ -457,6 +435,27 @@ if (!function_exists('formatRupiah')) {
                     button.closest('tr').remove();
                     calculateTotal();
                 }
+            }
+
+            // Load sale details from the database
+            function loadSaleDetails() {
+                const tbody = document.getElementById('saleItems');
+                tbody.innerHTML = ''; // Clear any existing rows
+
+                if (saleDetails && saleDetails.length) {
+                    saleDetails.forEach(detail => {
+                        tbody.insertAdjacentHTML('beforeend', createItemRow(detail));
+                    });
+                } else {
+                    // Add at least one empty row if no details
+                    addItem();
+                }
+
+                // Trigger calculations
+                calculateTotal();
+
+                // Update payment method display
+                document.getElementById('payment_method').dispatchEvent(new Event('change'));
             }
 
             // Add event listener for payment method change
@@ -483,10 +482,6 @@ if (!function_exists('formatRupiah')) {
                     paidAmountContainer.style.display = 'none';
                     changeContainer.style.display = 'none';
 
-                    // Reset nilai
-                    dpInput.value = 0;
-                    paidAmountInput.value = 0;
-
                     // Periksa apakah pelanggan dipilih
                     if (!document.getElementById('customer_select').value) {
                         alert('Untuk pembayaran hutang, pilih pelanggan terlebih dahulu');
@@ -510,39 +505,6 @@ if (!function_exists('formatRupiah')) {
                     // Hitung kembalian untuk tunai/transfer
                     calculateChange();
                 }
-            });
-
-            // Validasi form sebelum submit
-            document.getElementById('saleForm').addEventListener('submit', function(e) {
-                const tbody = document.getElementById('saleItems');
-                if (tbody.children.length === 0) {
-                    e.preventDefault();
-                    alert('Tambahkan setidaknya satu item');
-                    return false;
-                }
-
-                const paymentMethod = document.getElementById('payment_method').value;
-                const totalText = document.getElementById('totalAmount').textContent;
-                const total = parseFloat(totalText.replace('Rp ', '').replace(/\./g, '')) || 0;
-                const paid = parseFloat(document.getElementById('paid_amount').value) || 0;
-
-                // Validasi jumlah yang dibayar untuk metode pembayaran non-kredit
-                if (paymentMethod !== 'credit' && paid < total) {
-                    e.preventDefault();
-                    alert('Jumlah yang dibayar harus lebih besar atau sama dengan total belanja');
-                    return false;
-                }
-
-                // Validasi pemilihan pelanggan untuk pembayaran kredit
-                if (paymentMethod === 'credit') {
-                    if (!document.getElementById('customer_select').value) {
-                        e.preventDefault();
-                        alert('Transaksi kredit harus memilih pelanggan');
-                        return false;
-                    }
-                }
-
-                return true;
             });
 
             // Inisialisasi Select2
@@ -589,28 +551,9 @@ if (!function_exists('formatRupiah')) {
                 return true;
             });
 
-            // Tambahkan item pertama saat halaman dimuat
+            // Initialize on page load
             document.addEventListener('DOMContentLoaded', function() {
-                addItem();
-            });
-            // Handle form submission to separate customer_id vs customer_name
-            $('#saleForm').on('submit', function() {
-                var customerSelect = $('#customer_select');
-                var selectedOption = customerSelect.val();
-
-                // If the selected value starts with 'new:', it's a new customer name
-                if (selectedOption && selectedOption.startsWith('new:')) {
-                    // Extract the name part
-                    var newName = selectedOption.substring(4);
-
-                    // Set the new customer name in the hidden input
-                    $('#new_customer_name').val(newName);
-
-                    // Reset the customer_id to empty since we're creating a new customer
-                    customerSelect.val('');
-                }
-
-                return true;
+                loadSaleDetails();
             });
         </script>
     @endpush

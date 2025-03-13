@@ -18,11 +18,13 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable();
             $table->dateTime('date');
             $table->decimal('total_amount', 12, 2);
+            $table->decimal('discount', 12, 2)->default(0);
             $table->decimal('paid_amount', 12, 2);
             $table->decimal('down_payment', 15, 2)->default(0);
             $table->decimal('change_amount', 12, 2);
             $table->enum('payment_method', ['cash', 'transfer', 'credit']);
             $table->string('payment_status')->default('paid');
+            $table->enum('status', ['draft', 'completed', 'cancelled'])->default('completed');
             $table->decimal('remaining_amount', 15, 2)->default(0);
             $table->timestamp('due_date')->nullable();
             $table->text('notes')->nullable();
